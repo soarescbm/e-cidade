@@ -30,9 +30,9 @@ Consulte o diretório docs para acesso aos manuais de instalação de acordo com
 
 Para acessar a versão de demonstração do e-Cidade apresentada nesse repoósitório, utilize os dados abaixo:
 
-Versão de Demonstração: https://demo.ecidade.3r.net.br
-Usuário: demo
-Senha: demo
+ - Versão de Demonstração: https://demo.ecidade.3r.net.br
+ - Usuário: demo
+ - Senha: demo
 
 # Atualizações
 
