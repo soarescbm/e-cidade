@@ -25,3 +25,14 @@ Consulte a Licença Pública Geral GNU para obter mais detalhes.
 # Instalação
 
 Consulte o diretório docs para acesso aos manuais de instalação de acordo com as plataformas suportadas.
+
+# Versão de Demosntração
+
+Para acessar a versão de demonstração do e-Cidade apresentada nesse repoósitório, utilize os dados abaixo:
+
+Versão de Demonstração: https://demo.ecidade.3r.net.br
+Usuário: demo
+Senha: demo
+
+# Atualizações
+
