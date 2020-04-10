@@ -10,29 +10,18 @@ Prefeitura Municipal, Câmara Municipal, Autarquias, Fundações e outros.
 
 # Licença 
 
-E-cidade Software Publico para Gestao Municipal                
-Copyright (C) 2020  DBSeller Servicos de Informatica             
+E-cidade Software Público para Gestão Municipal                
+Copyright (C) 2020  DBSeller Serviços de Informática             
 www.dbseller.com.br                     
 e-cidade@dbseller.com.br                   
                                                                   
-Este programa e software livre; voce pode redistribui-lo e/ou     
-modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
-publicada pela Free Software Foundation; tanto a versao 2 da      
-Licenca como (a seu criterio) qualquer versao mais nova.          
+Este programa é software livre; 
+Você pode redistribuí-lo e/ou modificá-lo sob os termos da Liceça Pública Geral GNU, conforme publicada pela Free Software Foundation;Tanto a versão 2 da Licença como (a seu critério) qualquer versão mais nova.          
                                                                   
-Este programa e distribuido na expectativa de ser util, mas SEM   
-QUALQUER GARANTIA; sem mesmo a garantia implicita de              
-COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
-PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
-detalhes.     
+Este programa é distribuido na expectativa de ser útil, mas SEM QUALQUER GARANTIA; 
+Sem mesmo a garantia implicíta de COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. 
+Consulte a Licença Pública Geral GNU para obter mais detalhes.     
 
 # Instalação
 
-<<<<<<< HEAD
 Consulte o diretório docs para acesso aos manuais de instalação de acordo com as plataformas suportadas.
-
-=======
-Consulte o diretorio docs para acesso aos manuais de instalação de acordo com as plataformas suportadas.
-
-# Melhorias
->>>>>>> 6a4dbf3a55e777fce339310b7986c3302bdc34d4
