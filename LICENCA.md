@@ -1,17 +1,8 @@
-# e-Cidade
 
-Este repositório contém os scripts e programas para instalação com base na versao 2018-2 
-do e-cidade dispobilizado na Portal do Software Público Brasileiro - SPB (https://softwarepublico.gov.br/social/e-cidade
-), com correção de bugs e atualizações de acordo com a legislação vigente.
-
-O e-cidade destina-se a informatizar a gestão dos Municípios Brasileiros de forma 
-integrada. Esta informatização contempla a integração entre os entes municipais: 
-Prefeitura Municipal, Câmara Municipal, Autarquias, Fundações e outros.
-
-# Licença 
+# LICENÇA
 
 E-cidade Software Publico para Gestao Municipal                
-Copyright (C) 2020  DBSeller Servicos de Informatica             
+Copyright (C) 2014  DBSeller Servicos de Informatica             
 www.dbseller.com.br                     
 e-cidade@dbseller.com.br                   
                                                                   
@@ -24,9 +15,12 @@ Este programa e distribuido na expectativa de ser util, mas SEM
 QUALQUER GARANTIA; sem mesmo a garantia implicita de              
 COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
 PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
-detalhes.     
+detalhes.                                                         
+                                                                  
+Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+junto com este programa; se nao, escreva para a Free Software     
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+02111-1307, USA.                                                  
 
-# Instalação
-
-Consulte o diretório docs para acesso aos manuais de instalação de acordo com as plataformas suportadas.
-
+Copia da licenca no diretorio licenca/licenca_en.txt 
+                              licenca/licenca_pt.txt 
