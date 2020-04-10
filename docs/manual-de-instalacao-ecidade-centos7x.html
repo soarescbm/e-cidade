@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>manual-de-instalacao-ecidade-centos7x</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="text-justify">
+  <div class="container">
+    <div class="page-header">
+      <h1 id="instalando-o-e-cidade-a-partir-dos-fontes-no-linux" class="text-center"><strong>Instalando o e-cidade a partir dos fontes no Linux</strong></h1>
+    </div>
+    <p>O e-cidade destina-se a informatizar a gestão dos Municípios Brasileiros de forma integrada. Esta informatização contempla a integração entre os entes municipais: Prefeitura Municipal, Câmara Municipal, Autarquias, Fundações e outros. <br> A economia de recursos é somente uma das vantagens na adoção do e-cidade, além da liberdade de escolha dos fornecedores e garantia de continuidade do sistema, uma vez apoiado pelo Ministério do Planejamento.</p>
+    <h2 id="1-instalação-do-centos-7x">1. Instalação do CentOS 7.x</h2>
+    <p>O CentOS, abreviação de Community ENTerprise Operating System, é uma distribuição Linux de classe Enterprise derivada de códigos fonte gratuitamente distribuídos pela Red Hat Enterprise Linux e mantida pelo CentOS Project. Como o uso em servidores pode exigir uma maior compatibilidade com o hardware, a versão indicada para o uso com esta documentação é a CentOS 7.x.</p>
+    <h3 id="11-obtendo-a-mídia-de-instalação">1.1 Obtendo a mídia de instalação</h3>
+    <p>A mídia de instalação pode ser obtida diretamente do site do projeto e gravada em CD, DVD ou pendrive. No site <a href="http://www.centos.org/download/">http://www.centos.org/download/</a> esta disponível a versão mais recente, mas utilizaremos a versão 7 x86_64 disponível em <a href="http://mirror.globo.com/centos/7/isos/x86_64/">http://mirror.globo.com/centos/7/isos/x86_64/</a> (CentOS-7-x86_64-Minimal-1611.iso) por questões de compatibilidade com o produto.</p>
+    <h3 id="12-instalando-o-centos-7x">1.2 Instalando o CentOS 7.x</h3>
+    <p>O processo de instalação do sistema operacional não é coberto por esta documentação, mas recomendamos a utilização da imagem mínima, em “pt_BR” Português do Brasil.</p>
+    <blockquote>
+      <p><strong>Dica:</strong> Maiores informações sobre a instalação e personalização do sistema operacional podem ser obtidas em: <br> <a href="http://wiki.centos.org/Documentation">http://wiki.centos.org/Documentation</a> </p>
+    </blockquote>
+    <h3 id="13-editando-os-arquivos-de-configuração">1.3 Editando os arquivos de configuração</h3>
+    <p>Durante o processo de configuração descrito nesta documentação, é necessário editar e modificar diversos arquivos de texto. Para realizar estas modificações, sugerimos a utilização do editor “vim”, mas você pode usar qualquer outro editor de texto de sua preferência.</p>
+    <p>Para instalar o editor de arquivos execute o comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y install vim</span></code></pre>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o editor de textos “vim” podem ser obtidas em: <br> <a href="http://www.vim.org/">http://www.vim.org/</a>.</p>
+    </blockquote>
+    <h3 id="14-desabilitando-o-selinux">1.4 Desabilitando o SELinux</h3>
+    <blockquote>
+      <p><strong>Atenção:</strong> Se você tiver problemas com a execução do Apache, certifique-se que o contexto de seus arquivos de configuração do Apache estão corretamente configurados no SELinux, ou altere o modo de execução do SELinux para permissivo, ou desative-o.</p>
+    </blockquote>
+    <p>Para desativar o SELinux, edite o arquivo de configuração através do comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /etc/selinux/config</span></code></pre>
+    <p>Altere a linha de:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">SELINUX=enforcing</code></pre>
+    <p>Para:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">SELINUX=disabled</code></pre>
+    <blockquote>
+      <p><strong>Dica:</strong> Note que o valor correto é <code>disabled</code>, muitos usuários digitam apenas <code>disable</code>.</p>
+    </blockquote>
+    <h3 id="15-instalando-o-repositório-epel">1.5 Instalando o repositório EPEL</h3>
+    <p>Para instalar o repositório de Pacotes Adicionais para Enterprise Linux (EPEL), execute o comando abaixo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y install epel-release</span></code></pre>
+    <h3 id="16-instalando-o-repositório-remi">1.6 Instalando o repositório REMI</h3>
+    <p>Para instalar o repositório, execute o comando abaixo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y localinstall http://rpms.famillecollet.com/enterprise/remi-release-7.rpm</span></code></pre>
+    <h3 id="17-atualizando-o-sistema-operacional">1.7 Atualizando o sistema operacional</h3>
+    <p>Após a instalação, recomendamos a atualização dos pacotes do sistema operacional, para realizar esta tarefa, execute o comando abaixo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y update</span></code></pre>
+    <h3 id="18-reinicie-o-servidor">1.8 Reinicie o servidor</h3>
+    <p>Para reiniciar o servidor, utilize o comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># shutdown -r now</span></code></pre>
+    <h2 id="2-instalação-do-postgresql-95x">2. Instalação do PostgreSQL 9.5.x</h2>
+    <p>PostgreSQL é um sistema gerenciador de banco de dados objeto relacional (SGBDOR), desenvolvido como projeto de código aberto sem custo de licença. Este é o programa que vai gerenciar e armazenar o banco de dados relacional utilizado pelo e-cidade.</p>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o PostgreSQL podem ser obtidas em: <br> <a href="http://www.postgresql.org/">http://www.postgresql.org/</a>.</p>
+    </blockquote>
+    <h3 id="21-configurando-o-repositório">2.1 Configurando o repositório</h3>
+    <p>Para instalar o PostgreSQL 9.5.x e suas dependências, utilizaremos o gerenciador de pacotes <code>yum</code>, que nos prove as últimas atualizações dos pacotes requeridos através de um canal seguro e confiável.</p>
+    <h5 id="211-instale-o-repositório-através-do-comando">2.1.1 Instale o repositório através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y localinstall https://yum.postgresql.org/9.5/redhat/rhel-7.2-x86_64/pgdg-centos95-9.5-3.noarch.rpm</span></code></pre>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o gerenciador de pacotes “yum” podem ser obtidas em: <br> <a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/ch-yum.html">https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/ch-yum.html</a> </p>
+    </blockquote>
+    <h3 id="22-ajustando-o-encoding">2.2 Ajustando o encoding</h3>
+    <h5 id="221-configurando-e-regerando-o-locale">2.2.1 Configurando e regerando o ‘locale’</h5>
+    <p>Para o servidor do banco de dados, é necessário alterar a ordenação do locale, para realizar esta tarefa, edite o arquivo de configuração com o comando abaixo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /usr/share/i18n/locales/pt_BR</span></code></pre>
+    <p>Localize o bloco de configuração <code>LC_COLLATE</code> e <code>END LC_COLLATE</code>, e adicione dentro do bloco as seguintes linhas:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">reorder-after &lt;U00A0&gt;
+&lt;U0020&gt;&lt;CAP&gt;;&lt;CAP&gt;;&lt;CAP&gt;;&lt;U0020&gt;
+reorder-end</code></pre>
+    <h5 id="222-regerando-o-locale">2.2.2 Regerando o ‘locale’</h5>
+    <p>Para criação do cluster do e-cidade precisamos ter o locale pt_BR ISO-8859-1 disponível no sistema, para regerar utilize o comando abaixo.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># localedef -i pt_BR -c -f ISO-8859-1 -A /usr/share/locale/locale.alias pt_BR.ISO-8859-1</span></code></pre>
+    <h3 id="23-instalando-o-postgresql-95x">2.3 Instalando o PostgreSQL 9.5.x</h3>
+    <p>Para realizar a instalação do PostgreSQL 9.5.x através do gerenciador de pacotes execute os comandos:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y install postgresql95 postgresql95-contrib postgresql95-server</span></code></pre>
+    <h3 id="24-criando-e-configurando-o-cluster">2.4 Criando e configurando o cluster</h3>
+    <p>O e-cidade utiliza encoding LATIN1 (ISO-8859-1) no cluster do PostgreSQL 9.5.x. Por isso vamos criar e iniciar o cluster quer será utilizado pela aplicação.</p>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre a configuração do cluster: <br> <a href="http://www.postgresql.org/docs/9.5/static/sql-cluster.html">http://www.postgresql.org/docs/9.5/static/sql-cluster.html</a> </p>
+    </blockquote>
+    <h5 id="241-vamos-criar-o-novo-cluster-do-banco-de-dados-como-latin1-usando-os-comandos">2.4.1 Vamos criar o novo cluster do banco de dados como LATIN1 usando os comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># export LC_ALL=pt_BR.ISO-8859-1</span>
+[linux]<span class="hljs-comment"># su - postgres -c "/usr/pgsql-9.5/bin/initdb -A trust -D /var/lib/pgsql/9.5/data -E LATIN1 --locale=pt_BR.ISO-8859-1 -U postgres"</span></code></pre>
+    <h5 id="242-para-a-correta-integração-com-o-e-cidade-é-necessário-alterar-algumas-configurações-do-cluster-criado-através-do-comando">2.4.2 Para a correta integração com o e-cidade, é necessário alterar algumas configurações do cluster criado através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/lib/pgsql/9.5/data/postgresql.conf</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Os demais parâmetros, não descritos aqui, não precisam ser alterados.</p>
+    </blockquote>
+    <p>Localize e altere as linhas do arquivo do arquivo de configuração, descomentando-as se necessário (remover o caractere <code>#</code> do início da linha), substituindo os valores correspondentes conforme a indicação abaixo.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">listen_addresses = <span class="hljs-string">'*'</span>
+max_connections = <span class="hljs-number">20</span>
+bytea_output = <span class="hljs-string">'escape'</span>
+max_locks_per_transaction = <span class="hljs-number">256</span>
+default_with_oids = on
+escape_string_warning = off
+standard_conforming_strings = off</code></pre>
+    <h5 id="243-inicie-o-servidor-postgresql-através-do-comando">2.4.3 Inicie o servidor PostgreSQL através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># systemctl start postgresql-9.5</span></code></pre>
+    <h5 id="244-verifique-o-resultado-da-configuração-usando-o-comando">2.4.4 Verifique o resultado da configuração usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># psql -U postgres -h localhost -l</span></code></pre>
+    <p>A saída do comando deve ser parecida com os valores abaixo.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">   Nome    |   Dono   | Codificação |     Collate      |      C<span class="hljs-built_in">type</span>       | Privilégios de acesso
+-----------+----------+-------------+------------------+------------------+-----------------------
+ postgres  | postgres | LATIN1      | pt_BR.ISO-<span class="hljs-number">8859</span>-<span class="hljs-number">1</span> | pt_BR.ISO-<span class="hljs-number">8859</span>-<span class="hljs-number">1</span> |
+ template0 | postgres | LATIN1      | pt_BR.ISO-<span class="hljs-number">8859</span>-<span class="hljs-number">1</span> | pt_BR.ISO-<span class="hljs-number">8859</span>-<span class="hljs-number">1</span> | =c/postgres          +
+           |          |             |                  |                  | postgres=CTc/postgres
+ template1 | postgres | LATIN1      | pt_BR.ISO-<span class="hljs-number">8859</span>-<span class="hljs-number">1</span> | pt_BR.ISO-<span class="hljs-number">8859</span>-<span class="hljs-number">1</span> | =c/postgres          +
+           |          |             |                  |                  | postgres=CTc/postgres</code></pre>
+    <h5 id="245-adicione-o-serviço-do-postgressql-a-inicialização-do-sistema-operacional-usando-o-comando">2.4.5 Adicione o serviço do PostgresSQL a inicialização do sistema operacional usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># systemctl enable postgresql-9.5</span></code></pre>
+    <h3 id="25-criando-a-estrutura-de-banco-de-dados-para-o-e-cidade">2.5 Criando a estrutura de banco de dados para o e-cidade</h3>
+    <p>Vamos criar os usuários necessários para o funcionamento do e-cidade através dos comandos:</p>
+    <blockquote>
+      <p><strong>Atenção:</strong> Em ambientes de produção, nunca utilize senhas que tenham o mesmo nome da conta de usuário. Mais informações sobre segurança de senhas podem ser obtidas em: <br> <a href="http://cartilha.cert.br/senhas/">http://cartilha.cert.br/senhas/</a>.</p>
+    </blockquote>
+    <pre class="prettyprint"><code class="language-bash hljs ">psql -U postgres -c <span class="hljs-string">"CREATE ROLE ecidade WITH SUPERUSER LOGIN PASSWORD 'ecidade';"</span>
+psql -U postgres -c <span class="hljs-string">"CREATE ROLE plugin WITH LOGIN PASSWORD 'plugin';"</span>
+psql -U postgres -c <span class="hljs-string">"CREATE ROLE dbseller WITH LOGIN PASSWORD 'dbseller';"</span></code></pre>
+    <p>Em seguida, utilize o comando abaixo para criar o banco de dados:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">psql -U postgres -c <span class="hljs-string">"CREATE DATABASE ecidade OWNER ecidade;"</span></code></pre>
+    <h2 id="3-instalação-do-apache">3. Instalação do Apache</h2>
+    <p>Apache é o servidor web mais usado em sistemas Linux. Servidores web são usados para servir páginas Web que, normalmente, são solicitadas pelos computadores clientes através de navegador, como o Firefox, Chromium, etc.</p>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o Apache podem ser obtidas em: <br> <a href="http://www.apache.org/">http://www.apache.org/</a>.</p>
+    </blockquote>
+    <h3 id="31-instalando-o-apache">3.1 Instalando o Apache</h3>
+    <p>Para realizar a instalação do servidor web Apache através do gerenciador de pacotes, execute o comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y install httpd</span></code></pre>
+    <h3 id="32-configurando-o-apache">3.2 Configurando o Apache</h3>
+    <h5 id="321-para-a-correta-integração-com-o-e-cidade-é-necessário-alterar-algumas-configurações-do-apache-edite-o-arquivo-de-configuração-através-do-comando">3.2.1 Para a correta integração com o e-cidade, é necessário alterar algumas configurações do apache, edite o arquivo de configuração através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /etc/httpd/conf/httpd.conf</span></code></pre>
+    <p>Localize o bloco abaixo:</p>
+    <pre class="prettyprint"><code class="language-php hljs ">&lt;Directory <span class="hljs-string">"/var/www/html"</span>&gt;
+    <span class="hljs-comment">#</span>
+    <span class="hljs-comment"># Possible values for the Options directive are "None", "All",</span>
+    <span class="hljs-comment"># or any combination of:</span>
+    <span class="hljs-comment">#   Indexes Includes FollowSymLinks SymLinksifOwnerMatch ExecCGI MultiViews</span>
+    <span class="hljs-comment">#</span>
+    <span class="hljs-comment"># Note that "MultiViews" must be named *explicitly* --- "Options All"</span>
+    <span class="hljs-comment"># doesn't give it to you.</span>
+    <span class="hljs-comment">#</span>
+    <span class="hljs-comment"># The Options directive is both complicated and important.  Please see</span>
+    <span class="hljs-comment"># http://httpd.apache.org/docs/2.4/mod/core.html#options</span>
+    <span class="hljs-comment"># for more information.</span>
+    <span class="hljs-comment">#</span>
+    Options Indexes FollowSymLinks
+
+    <span class="hljs-comment">#</span>
+    <span class="hljs-comment"># AllowOverride controls what directives may be placed in .htaccess files.</span>
+    <span class="hljs-comment"># It can be "All", "None", or any combination of the keywords:</span>
+    <span class="hljs-comment">#   Options FileInfo AuthConfig Limit</span>
+    <span class="hljs-comment">#</span>
+    AllowOverride None
+
+    <span class="hljs-comment">#</span>
+    <span class="hljs-comment"># Controls who can get stuff from this server.</span>
+    <span class="hljs-comment">#</span>
+    <span class="hljs-keyword">Require</span> all granted
+&lt;/Directory&gt;</code></pre>
+    <p>E altere para:</p>
+    <pre class="prettyprint"><code class="language-php hljs ">&lt;Directory <span class="hljs-string">"/var/www/html"</span>&gt;
+    Options -Indexes +FollowSymLinks +MultiViews
+    AllowOverride All
+    <span class="hljs-keyword">Require</span> all granted
+&lt;/Directory&gt;
+
+LimitRequestLine <span class="hljs-number">16382</span>
+LimitRequestFieldSize <span class="hljs-number">16382</span>
+Timeout <span class="hljs-number">12000</span>
+AddDefaultCharset ISO-<span class="hljs-number">8859</span>-<span class="hljs-number">1</span>
+SetEnv no-gzip <span class="hljs-number">1</span></code></pre>
+    <p>Localize o bloco abaixo:</p>
+    <pre class="prettyprint"><code class="language-php hljs ">&lt;IfModule dir_module&gt;
+    DirectoryIndex index.html
+&lt;/IfModule&gt;</code></pre>
+    <p>E altere para:</p>
+    <pre class="prettyprint"><code class="language-php hljs ">&lt;IfModule dir_module&gt;
+    DirectoryIndex index.php index.html
+&lt;/IfModule&gt;</code></pre>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o VirtualHost podem ser obtidas em: <br> <a href="http://httpd.apache.org/docs/current/vhosts/examples.html">http://httpd.apache.org/docs/current/vhosts/examples.html</a>.</p>
+    </blockquote>
+    <h3 id="33-adicione-o-serviço-do-apache-a-inicialização-do-sistema-operacional-usando-o-comando">3.3 Adicione o serviço do Apache a inicialização do sistema operacional usando o comando:</h3>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># systemctl enable httpd</span></code></pre>
+    <h2 id="4-instalação-do-php-56-e-php-fpm">4. Instalação do PHP 5.6 e PHP-FPM</h2>
+    <p>PHP é uma linguagem interpretada livre, usada originalmente apenas para o desenvolvimento de aplicações presentes e atuantes no lado do servidor, capazes de gerar conteúdo dinâmico na World Wide Web.</p>
+    <p>O PHP-FPM é uma alternativa ao PHP FastCGI com muitas funcionalidades voltadas a sites com grande número de acessos e carga.</p>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o PHP podem ser obtidas em: <br> <a href="http://www.php.net/">http://www.php.net/</a> e <a href="http://php-fpm.org/">http://php-fpm.org/</a> </p>
+    </blockquote>
+    <h3 id="41-instalando-o-php-56-e-o-php-fpm">4.1 Instalando o PHP 5.6 e o PHP-FPM</h3>
+    <p>Para realizar a instalação do PHP 5.6 através do gerenciador de pacotes, execute o comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y install php56 php56-php-cli php56-php-common php56-php-pear php56-php-pecl-jsonc php56-php-pecl-zip php56-php-process php56-php-xml php56-runtime php56-php-bcmath php56-php-gd php56-php-interbase php56-php-pecl-jsonc php56-php-mbstring php56-php-mcrypt php56-php-pgsql php56-php-soap php56-php-pecl-sqlite php56-php-xmlrpc php56-php-pecl-zip php56-php-fpm unzip zip xz xz-lzma-compat bzip2</span></code></pre>
+    <h3 id="42-configurando-o-php-56-e-o-php-fpm">4.2 Configurando o PHP 5.6 e o PHP-FPM</h3>
+    <h5 id="421-habilitar-as-dependências-de-configuração-através-do-comando">4.2.1 Habilitar as dependências de configuração através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /etc/httpd/conf.d/php5.6-fpm.conf</span></code></pre>
+    <pre class="prettyprint"><code class="language-bash hljs ">&lt;IfModule !mod_php5.c&gt;
+&lt;IfModule proxy_fcgi_module&gt;
+    &lt;IfModule setenvif_module&gt;
+    SetEnvIfNoCase ^Authorization$ <span class="hljs-string">"(.+)"</span> HTTP_AUTHORIZATION=<span class="hljs-variable">$1</span>
+    &lt;/IfModule&gt;
+    &lt;FilesMatch <span class="hljs-string">".+\.ph(p[3457]?|t|tml)$"</span>&gt;
+        SetHandler <span class="hljs-string">"proxy:fcgi://127.0.0.1:9000/"</span>
+    &lt;/FilesMatch&gt;
+    &lt;Proxy <span class="hljs-string">"fcgi://127.0.0.1:9000/"</span>&gt;
+    &lt;/Proxy&gt;
+    &lt;FilesMatch <span class="hljs-string">".+\.phps$"</span>&gt;
+        Require all denied
+    &lt;/FilesMatch&gt;
+    &lt;FilesMatch <span class="hljs-string">"^\.ph(p[3457]?|t|tml|ps)$"</span>&gt;
+        Require all denied
+    &lt;/FilesMatch&gt;
+&lt;/IfModule&gt;
+&lt;/IfModule&gt;</code></pre>
+    <h5 id="422-configurar-o-arquivo-de-pool-do-php-fpm-através-dos-comandos">4.2.2 Configurar o arquivo de pool do PHP-FPM através dos comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /opt/remi/php56/root/etc/php-fpm.d/www.conf</span></code></pre>
+    <p>Localize as linhas abaixo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">php_admin_value[error_log] = /opt/remi/php56/root/var/log/php-fpm/www-error.log
+php_admin_flag[log_errors] = on</code></pre>
+    <p>E altere para:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">;php_admin_value[error_log] = /opt/remi/php56/root/var/log/php-fpm/www-error.log
+;php_admin_flag[log_errors] = on</code></pre>
+    <h5 id="423-configurar-o-arquivo-de-log-do-php-fpm-através-dos-comandos">4.2.3 Configurar o arquivo de log do PHP-FPM através dos comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># touch /var/log/php_errors.log</span>
+[linux]<span class="hljs-comment"># chown apache.apache /var/log/php_errors.log</span></code></pre>
+    <h5 id="424-para-a-correta-integração-com-o-e-cidade-é-necessário-alterar-algumas-configurações-do-php-através-do-comando">4.2.4 Para a correta integração com o e-Cidade, é necessário alterar algumas configurações do PHP através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /opt/remi/php56/root/etc/php.ini</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Os demais parâmetros, não descritos aqui, não precisam ser alterados.</p>
+    </blockquote>
+    <p>Localize e altere as linhas do arquivo do arquivo de configuração, descomentando-as se necessário (remover o caractere <code>;</code> do início da linha), substituindo os valores correspondentes conforme a indicação abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs ">short_open_tag = On
+session.gc_maxlifetime = <span class="hljs-number">7200</span>
+date.timezone = <span class="hljs-string">"America/Sao_Paulo"</span></code></pre>
+    <h5 id="425-por-questões-de-compatibilidade-o-e-cidade-é-necessário-criar-um-link-simbólico-para-o-binário-do-php-através-do-comando">4.2.5 Por questões de compatibilidade o e-Cidade, é necessário criar um link simbólico para o binário do PHP através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># ln -s /opt/remi/php56/root/usr/bin/php /usr/bin/php</span></code></pre>
+    <h5 id="426-reinicie-o-serviço-do-php-fpm-e-do-apache-usando-os-comandos">4.2.6 Reinicie o serviço do PHP-FPM e do Apache usando os comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># systemctl restart php56-php-fpm</span>
+[linux]<span class="hljs-comment"># systemctl restart httpd</span></code></pre>
+    <h3 id="43-adicione-o-serviço-do-php-fpm-a-inicialização-do-sistema-operacional-usando-o-comando">4.3 Adicione o serviço do PHP-FPM a inicialização do sistema operacional usando o comando:</h3>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># systemctl enable php56-php-fpm</span></code></pre>
+    <h2 id="5-instalação-do-libreoffice">5. Instalação do LibreOffice</h2>
+    <p>O LibreOffice é uma suite de escritório livre compatível com as principais suítes de escritório do mercado. Oferece todas as funções esperadas de uma suite profissional: editor de textos, planilha, apresentação, editor de desenhos e banco de dados. <br> No e-cidade, o LibreOffice é utilizado para exportar documentos baseados em modelos de formulários.</p>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o LibreOffice podem ser obtidas em: <br> <a href="https://pt-br.libreoffice.org/">https://pt-br.libreoffice.org/</a>.</p>
+    </blockquote>
+    <h3 id="51-instalando-dependências">5.1 Instalando dependências</h3>
+    <p>Antes de instalarmos o pacote do LibreOffice, devemos instalar uma dependência através do comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y localinstall https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm</span></code></pre>
+    <h3 id="52-instalando-o-libreoffice">5.2 Instalando o LibreOffice</h3>
+    <p>Para realizar a instalação do LibreOffice através do gerenciador de pacotes, execute o comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y install libreoffice-writer</span></code></pre>
+    <h2 id="6-instalação-do-e-cidade">6. Instalação do e-cidade</h2>
+    <h3 id="61-obtendo-o-pacote-de-instalação">6.1 Obtendo o pacote de instalação</h3>
+    <p>O pacote de instalação pode ser obtido diretamente do site do Portal do Software Público. No endereço da comunidade do e-cidade (<a href="https://softwarepublico.gov.br/social/e-cidade">https://softwarepublico.gov.br/social/e-cidade</a>) estão disponíveis as últimas versões e suas atualizações. Como estamos realizando uma nova instalação, você deve baixar o pacote <code>completo</code>, um exemplo de nome do pacote seria: <code>e-cidade-x.x.xx-linux.completo.tar.bz2</code>.</p>
+    <h3 id="62-configurando-o-servidor">6.2 Configurando o servidor</h3>
+    <h5 id="621-vamos-criar-um-usuário-administrativo-para-o-e-cidade-neste-exemplo-criaremos-o-usuário-dbseller-através-do-comando">6.2.1 Vamos criar um usuário administrativo para o e-cidade, neste exemplo criaremos o usuário <code>dbseller</code> através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># useradd -d /home/dbseller -g apache -G wheel -k /etc/skel -m -s /bin/bash dbseller</span></code></pre>
+    <h5 id="622-em-seguida-vamos-definir-uma-senha-para-este-novo-usuário-usando-o-comando">6.2.2 Em seguida, vamos definir uma senha para este novo usuário usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># passwd dbseller</span></code></pre>
+    <blockquote>
+      <p><strong>Dica:</strong> Neste exemplo, defina a senha como o mesmo nome de usuário, como “dbseller”.</p>
+      <p><strong>Atenção:</strong> Em ambientes de produção, nunca utilize senhas que tenham o mesmo nome da conta de usuário. Mais informações sobre segurança de senhas podem ser obtidas em: <a href="http://cartilha.cert.br/senhas/">http://cartilha.cert.br/senhas/</a>.</p>
+    </blockquote>
+    <h5 id="623-agora-vamos-habilitar-a-autenticação-do-grupo-wheel-editando-o-arquivo-usando-o-comando">6.2.3 Agora vamos habilitar a autenticação do grupo <code>wheel</code> editando o arquivo usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /etc/pam.d/su</span></code></pre>
+    <p>Localize e descomente a linha como mostrado abaixo.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">auth            required        pam_wheel.so use_uid</code></pre>
+    <h5 id="624-para-encaminhar-os-e-mails-destinados-ao-usuário-root-para-o-usuário-dbseller-edite-o-arquivo-através-do-comando">6.2.4 Para encaminhar os e-mails destinados ao usuário <code>root</code> para o usuário <code>dbseller</code>, edite o arquivo através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /etc/aliases</span></code></pre>
+    <p>Mova o cursor até o fim do arquivo e insira alinha como mostrado abaixo.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">root:           dbseller</code></pre>
+    <p>Em seguida, execute o comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># newaliases</span></code></pre>
+    <h5 id="625-também-devemos-corrigir-a-máscara-de-criação-de-arquivos-modificando-os-arquivos-através-dos-comandos">6.2.5 Também devemos corrigir a máscara de criação de arquivos modificando os arquivos através dos comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /etc/login.defs</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Os demais parâmetros, não descritos aqui, não precisam ser alterados.</p>
+    </blockquote>
+    <p>Localize e altere a linha do arquivo do arquivo de configuração, descomentando-a se necessário (remover o caractere <code>#</code> do início da linha), substituindo o valor correspondente conforme a indicação abaixo.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">UMASK           <span class="hljs-number">002</span></code></pre>
+    <p>Em seguida, execute o comando abaixo para ajustar os arquivos criados pelo apache:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># echo "umask 002" &gt;&gt; /etc/sysconfig/httpd</span></code></pre>
+    <h3 id="63-instalando-o-e-cidade">6.3 Instalando o e-cidade</h3>
+    <h5 id="631-descompacte-o-pacote-do-e-cidade-através-do-comando">6.3.1 Descompacte o pacote do e-cidade através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># tar xjf e-cidade-x.x.xx-linux.completo.tar.bz2</span></code></pre>
+    <h5 id="632-copie-o-diretório-do-e-cidade-para-o-diretório-raiz-do-apache-usando-o-comando">6.3.2 Copie o diretório do e-cidade para o diretório raiz do Apache usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp -r e-cidade-x.x.xx-linux.completo/e-cidade /var/www/html/</span></code></pre>
+    <h3 id="64-configurando-o-e-cidade">6.4 Configurando o e-cidade</h3>
+    <h5 id="641-crie-o-arquivo-de-configuração-de-acesso-ao-banco-de-dados-através-do-comando">6.4.1 Crie o arquivo de configuração de acesso ao banco de dados através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp -a /var/www/html/e-cidade/libs/db_conn.php.dist /var/www/html/e-cidade/libs/db_conn.php</span></code></pre>
+    <p>Utilize o seguinte comando para editar o arquivo de configuração:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/www/html/e-cidade/libs/db_conn.php</span></code></pre>
+    <p>Em seguida, atualize as configurações conforme o exemplo abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs "><span class="hljs-variable">$DB_USUARIO</span> = <span class="hljs-string">"ecidade"</span>;
+<span class="hljs-variable">$DB_SENHA</span> = <span class="hljs-string">"ecidade"</span>;
+<span class="hljs-variable">$DB_SERVIDOR</span> = <span class="hljs-string">"localhost"</span>;
+<span class="hljs-variable">$DB_PORTA</span> = <span class="hljs-string">"5432"</span>;
+<span class="hljs-variable">$DB_PORTA_ALT</span> = <span class="hljs-string">"5432"</span>;
+<span class="hljs-variable">$DB_BASE</span> = <span class="hljs-string">"ecidade"</span>;</code></pre>
+    <h5 id="642-crie-o-arquivo-de-configuração-de-acesso-dos-plugins-através-do-comando">6.4.2 Crie o arquivo de configuração de acesso dos plugins através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp -a /var/www/html/e-cidade/config/plugins.json.dist /var/www/html/e-cidade/config/plugins.json</span></code></pre>
+    <p>Utilize o seguinte comando para editar o arquivo de configuração:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/www/html/e-cidade/config/plugins.json</span></code></pre>
+    <p>Em seguida, atualize as configurações conforme o exemplo abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs ">{
+  <span class="hljs-string">"AcessoBase"</span> : {
+    <span class="hljs-string">"usuario"</span> : <span class="hljs-string">"plugin"</span>,
+    <span class="hljs-string">"senha"</span> : <span class="hljs-string">"plugin"</span>
+  }
+}</code></pre>
+    <h5 id="643-configure-o-servidor-de-envio-de-e-mails-do-e-cidade-através-do-comando">6.4.3 Configure o servidor de envio de e-mails do e-cidade através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/www/html/e-cidade/libs/config.mail.php</span></code></pre>
+    <p>Em seguida, atualize as configurações, com os dados do seu servidor de e-mail, conforme o exemplo abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs "><span class="hljs-variable">$sClass</span> = <span class="hljs-number">3</span>;
+<span class="hljs-variable">$sSslt</span>  = <span class="hljs-string">''</span>; <span class="hljs-comment">// qual o tipo de ssl q sera utilizados ( ex: tls), por padrao é vazio</span>
+<span class="hljs-variable">$bAuth</span>  = <span class="hljs-keyword">true</span>; <span class="hljs-comment">// autenticacao habilitada</span>
+<span class="hljs-variable">$sUser</span>  = <span class="hljs-string">'exemplo@exemplo.com.br'</span>;
+<span class="hljs-variable">$sPass</span>  = <span class="hljs-string">'senhaexemplo'</span>;
+<span class="hljs-variable">$sHost</span>  = <span class="hljs-string">'smtp.exemplo.com.br'</span>;
+<span class="hljs-variable">$sPort</span>  = <span class="hljs-string">'25'</span>;</code></pre>
+    <h5 id="644-faça-a-carga-do-schema-do-e-cidade-através-do-comando">6.4.4 Faça a carga do <code>schema</code> do e-cidade através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># psql -U ecidade -d ecidade -f e-cidade-x.x.xx-linux.completo/sql/e-cidade-x.x.xx.sql 2&gt; /tmp/erros.txt</span></code></pre>
+    <p>Após a carga, execute o comando abaixo para otimizar as consultas:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># psql -U ecidade -d ecidade -c "VACUUM ANALYZE VERBOSE;"</span></code></pre>
+    <h5 id="645-ajuste-as-permissões-dos-diretórios-através-dos-comandos">6.4.5 Ajuste as permissões dos diretórios através dos comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># chown -R dbseller.apache /var/www/html/e-cidade</span>
+[linux]<span class="hljs-comment"># chmod -R 775 /var/www/html/e-cidade</span>
+[linux]<span class="hljs-comment"># chmod -R 777 /var/www/html/e-cidade/tmp</span></code></pre>
+    <h3 id="65-agendando-a-migração-da-auditoria">6.5 Agendando a migração da auditoria</h3>
+    <h5 id="651-edite-o-crontab-do-usuário-dbseller-através-do-comando">6.5.1 Edite o crontab do usuário <code>dbseller</code> através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># crontab -u dbseller -e</span></code></pre>
+    <p>Em seguida, adicione o seguinte bloco ao final do arquivo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs "><span class="hljs-comment"># DBSeller - Agendamento do script para migracao do acount para nova estrutura "db_auditoria"</span>
+*/<span class="hljs-number">30</span> * * * * <span class="hljs-built_in">cd</span> /var/www/html/e-cidade/integracao_externa/auditoria; ./auditoria_migracao.sh <span class="hljs-number">0</span> <span class="hljs-number">10</span> <span class="hljs-number">1</span> &gt; log/auditoria_migracao.log <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span>
+*/<span class="hljs-number">10</span> * * * * <span class="hljs-built_in">cd</span> /var/www/html/e-cidade/integracao_externa/auditoria; php -q auditoria_adiciona_fila.php &gt; log/auditoria_adiciona_fila.log <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Lembre-se de ajustar o caminho para o diretório do e-cidade conforme o ambiente em que foi instalado.</p>
+    </blockquote>
+    <h3 id="66-agendando-a-verificação-do-gerenciador-de-tarefas">6.6 Agendando a verificação do gerenciador de tarefas</h3>
+    <h5 id="661-para-criar-o-script-de-verificação-execute-os-comandos">6.6.1 Para criar o script de verificação execute os comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># mkdir -p /opt/dbseller/scripts</span>
+[linux]<span class="hljs-comment"># vim /opt/dbseller/scripts/ativadorGerenciadorTarefasEcidade.sh</span></code></pre>
+    <p>Em seguida, adicione as linhas indicadas abaixo.</p>
+    <pre class="prettyprint"><code class="language-bash hljs "><span class="hljs-shebang">#!/bin/bash</span>
+sDiretorioEcidade=<span class="hljs-string">"/var/www/html/e-cidade"</span>
+<span class="hljs-keyword">if</span> [ ! <span class="hljs-operator">-d</span> <span class="hljs-variable">$sDiretorioEcidade</span> ]; <span class="hljs-keyword">then</span>
+  <span class="hljs-built_in">echo</span> <span class="hljs-string">"Diretorio <span class="hljs-variable">$sDiretorioEcidade</span> nao existe"</span>
+  <span class="hljs-keyword">exit</span> <span class="hljs-number">1</span>;
+<span class="hljs-keyword">fi</span>
+
+sContador=$(ps aux | grep <span class="hljs-string">'&lt;defunct&gt;'</span> | grep -v <span class="hljs-string">'grep'</span> | wc <span class="hljs-operator">-l</span>)
+<span class="hljs-keyword">if</span> [ <span class="hljs-string">"<span class="hljs-variable">$sContador</span>"</span> <span class="hljs-operator">-gt</span> <span class="hljs-string">"5"</span> ]; <span class="hljs-keyword">then</span>
+  sPid=$(ps aux | grep <span class="hljs-string">"con4_gerenciadortarefas002.php"</span> | grep -v <span class="hljs-string">"grep"</span> | awk <span class="hljs-string">'{print $2}'</span>);
+  kill <span class="hljs-variable">${sPid}</span>
+<span class="hljs-keyword">fi</span>
+
+sTarefa=$(ps aux | grep <span class="hljs-string">"con4_gerenciadortarefas002.php"</span> | grep -v <span class="hljs-string">"grep"</span>);
+<span class="hljs-keyword">if</span> [ <span class="hljs-string">"<span class="hljs-variable">$sTarefa</span>"</span> == <span class="hljs-string">""</span> ]; <span class="hljs-keyword">then</span>
+  <span class="hljs-built_in">cd</span> <span class="hljs-variable">$sDiretorioEcidade</span>;
+  /usr/bin/php -q FrontIntegracaoExterna.php --executable con4_gerenciadortarefas002.php &gt; tmp/log_gerenciador_tarefas.log <span class="hljs-number">2</span>&gt; tmp/erros_gerenciador_tarefas.log &amp;
+<span class="hljs-keyword">fi</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Lembre-se de ajustar o caminho para o diretório do e-cidade conforme o ambiente em que foi instalado.</p>
+    </blockquote>
+    <h5 id="662-antes-de-agendar-o-script-de-verificação-ajuste-a-permissão-utilizando-o-seguinte-comando">6.6.2 Antes de agendar o script de verificação, ajuste a permissão utilizando o seguinte comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># chmod +x /opt/dbseller/scripts/ativadorGerenciadorTarefasEcidade.sh</span></code></pre>
+    <p>Em seguinda, edite o crontab do usuário <code>root</code> através do comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># crontab -e</span></code></pre>
+    <p>E adicione o seguinte bloco ao final do arquivo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs "><span class="hljs-comment"># DBSeller - Agendamento do script de verificacao do gerenciador de tarefas</span>
+*/<span class="hljs-number">15</span> * * * * <span class="hljs-built_in">cd</span> /opt/dbseller/scripts &amp;&amp; su <span class="hljs-operator">-s</span> /bin/bash apache -c <span class="hljs-string">"bash ativadorGerenciadorTarefasEcidade.sh"</span></code></pre>
+    <h3 id="67-acessando-o-e-cidade">6.7 Acessando o e-cidade</h3>
+    <p>Após finalizar os procedimentos de instalação e configuração, abra um navegador e acesse o e-cidade através do endereço IP ou nome do servidor. EX: <a href="http://ip_do_servidor/e-cidade">http://ip_do_servidor/e-cidade</a>, utilize como nome de usuário <code>dbseller</code>, e deixe o campo senha em branco.</p>
+    <blockquote>
+      <p><strong>Atenção:</strong> Certifique-se que o bloqueador de pop-up esteja permitindo o acesso ao endereço IP ou nome do servidor em que o e-cidade foi instalado.</p>
+    </blockquote>
+    <h2 id="7-instalação-do-e-cidadeonline">7. Instalação do e-cidadeonline</h2>
+    <h3 id="71-instalando-o-e-cidadeonline">7.1 Instalando o e-cidadeonline</h3>
+    <h5 id="711-copie-o-diretório-do-e-cidadeonline-para-o-diretório-raiz-do-apache-usando-o-comando">7.1.1 Copie o diretório do e-cidadeonline para o diretório raiz do Apache usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp -r e-cidade-x.x.xx-linux.completo/e-cidadeonline /var/www/html/</span></code></pre>
+    <h3 id="72-configurando-o-e-cidadeonline">7.2 Configurando o e-cidadeonline</h3>
+    <h5 id="721-crie-o-arquivo-de-configuração-de-acesso-ao-banco-de-dados-através-do-comando">7.2.1 Crie o arquivo de configuração de acesso ao banco de dados através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp -a /var/www/html/e-cidadeonline/libs/db_conn.php.dist /var/www/html/e-cidadeonline/libs/db_conn.php</span></code></pre>
+    <p>Utilize o seguinte comando para editar o arquivo de configuração:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/www/html/e-cidadeonline/libs/db_conn.php</span></code></pre>
+    <p>Em seguida, atualize as configurações conforme o exemplo abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs "><span class="hljs-variable">$DB_INSTITUICAO</span> = <span class="hljs-number">1</span>;
+<span class="hljs-variable">$DB_SERVIDOR</span> = <span class="hljs-string">"localhost"</span>;
+<span class="hljs-variable">$DB_BASEDADOS</span> = <span class="hljs-string">"ecidade"</span>;
+<span class="hljs-variable">$DB_USUARIO</span> = <span class="hljs-string">"ecidade"</span>;
+<span class="hljs-variable">$DB_PORTA</span> = <span class="hljs-string">"5432"</span>;</code></pre>
+    <h5 id="722-configure-o-servidor-de-envio-de-e-mails-do-e-cidadeonline-através-do-comando">7.2.2 Configure o servidor de envio de e-mails do e-cidadeonline através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/www/html/e-cidadeonline/libs/config.mail.php</span></code></pre>
+    <p>Em seguida, atualize as configurações, com os dados do seu servidor de e-mail, conforme o exemplo abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs "><span class="hljs-variable">$sClass</span> = <span class="hljs-number">3</span>;
+<span class="hljs-variable">$sSslt</span>  = <span class="hljs-string">''</span>; <span class="hljs-comment">// qual o tipo de ssl q sera utilizados ( ex: tls), por padrao é vazio</span>
+<span class="hljs-variable">$bAuth</span>  = <span class="hljs-keyword">true</span>; <span class="hljs-comment">// autenticacao habilitada</span>
+<span class="hljs-variable">$sUser</span>  = <span class="hljs-string">'exemplo@exemplo.com.br'</span>;
+<span class="hljs-variable">$sPass</span>  = <span class="hljs-string">'senhaexemplo'</span>;
+<span class="hljs-variable">$sHost</span>  = <span class="hljs-string">'smtp.exemplo.com.br'</span>;
+<span class="hljs-variable">$sPort</span>  = <span class="hljs-string">'25'</span>;</code></pre>
+    <h5 id="723-ajuste-as-permissões-dos-diretórios-através-dos-comandos">7.2.3 Ajuste as permissões dos diretórios através dos comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># chown -R dbseller.apache /var/www/html/e-cidadeonline</span>
+[linux]<span class="hljs-comment"># chmod -R 775 /var/www/html/e-cidadeonline</span>
+[linux]<span class="hljs-comment"># chmod -R 777 /var/www/html/e-cidadeonline/tmp</span></code></pre>
+    <h3 id="73-acessando-o-e-cidadeonline">7.3 Acessando o e-cidadeonline</h3>
+    <p>Após finalizar os procedimentos de instalação e configuração, abra um navegador e acesse o e-cidadeonline através do endereço IP ou nome do servidor. EX: <a href="http://ip_do_servidor/e-cidadeonline">http://ip_do_servidor/e-cidadeonline</a>, utilize como nome de usuário <code>dbseller</code>, e deixe o campo senha em branco.</p>
+    <h2 id="8-configurando-a-carga-de-integrações">8. Configurando a carga de integrações</h2>
+    <blockquote>
+      <p><strong>Dica:</strong> Preste atenção aos horários de agendamento do crontab de múltiplas integrações. Procure verificar o tempo de duração da execução de cada integração, ajustando o horário de excução conforme a necessidade.</p>
+      <p><strong>Dica:</strong> Sempre que possível, execute manualmente a linha agendada para certificar o correto funcionamento do agendamento.</p>
+    </blockquote>
+    <h3 id="81-configurando-a-integração-de-carga-do-cubo-do-bi">8.1 Configurando a integração de carga do cubo do BI</h3>
+    <h5 id="811-crie-o-arquivo-de-configuração-de-acesso-ftp-para-a-carga-do-cubo-do-bi-através-do-comando">8.1.1 Crie o arquivo de configuração de acesso FTP para a carga do cubo do BI através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp -a /var/www/html/e-cidade/libs/db_cubo_bi_config.php.dist /var/www/html/e-cidade/libs/db_cubo_bi_config.php</span></code></pre>
+    <p>Utilize o seguinte comando para editar o arquivo de configuração:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/www/html/e-cidade/libs/db_cubo_bi_config.php</span></code></pre>
+    <p>Em seguida, atualize as configurações conforme o exemplo abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs "><span class="hljs-variable">$configCuboBi</span>[<span class="hljs-string">'ftp'</span>][<span class="hljs-string">'server'</span>]        = <span class="hljs-string">"endereco.ip.do.servidor"</span>;
+<span class="hljs-variable">$configCuboBi</span>[<span class="hljs-string">'ftp'</span>][<span class="hljs-string">'usuario'</span>]       = <span class="hljs-string">"nome-usuario-ftp"</span>;
+<span class="hljs-variable">$configCuboBi</span>[<span class="hljs-string">'ftp'</span>][<span class="hljs-string">'senha'</span>]         = <span class="hljs-string">"senha-do-usuario-ftp"</span>;
+<span class="hljs-variable">$configCuboBi</span>[<span class="hljs-string">'ftp'</span>][<span class="hljs-string">'diretorio'</span>]     = <span class="hljs-string">"diretorio-de-destino"</span>;
+<span class="hljs-variable">$configCuboBi</span>[<span class="hljs-string">'ftp'</span>][<span class="hljs-string">'passive_mode'</span>]  = <span class="hljs-keyword">true</span>;</code></pre>
+    <h3 id="82-configurando-a-integração-de-carga-do-webservice-horus-basico">8.2 Configurando a integração de carga do Webservice HORUS BASICO</h3>
+    <h5 id="821-crie-o-arquivo-de-configuração-de-através-do-comando">8.2.1 Crie o arquivo de configuração de através do comando:</h5>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o Werbservice HORUS BASICO podem ser obtidas em: <br> <a href="http://portalsaude.saude.gov.br/index.php/o-ministerio/principal/leia-mais-o-ministerio/218-sctie-raiz/daf-raiz/ceaf-sctie/qualifarsus-raiz/eixo-informacao/l1-eixo-informacao/8508-envio-de-dados-webservice">http://portalsaude.saude.gov.br/index.php/o-ministerio/principal/leia-mais-o-ministerio/218-sctie-raiz/daf-raiz/ceaf-sctie/qualifarsus-raiz/eixo-informacao/l1-eixo-informacao/8508-envio-de-dados-webservice</a> </p>
+    </blockquote>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp -a /var/www/html/e-cidade/libs/db_config_horus.php.dist /var/www/html/e-cidade/libs/db_config_horus.php</span></code></pre>
+    <p>Utilize o seguinte comando para editar o arquivo de configuração:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/www/html/e-cidade/libs/db_config_horus.php</span></code></pre>
+    <p>Em seguida, atualize as configurações conforme o exemplo abaixo.</p>
+    <blockquote>
+      <p><strong>Atenção:</strong> Consulte a documentação das URLs no portalsaude.saude.gov.br antes de utilizar a integração.</p>
+    </blockquote>
+    <pre class="prettyprint"><code class="language-php hljs "><span class="hljs-comment">// Homologação</span>
+<span class="hljs-variable">$sUrlWebService</span> = <span class="hljs-string">"http://189.28.128.37/horus-ws-basico/RecebeDadosWS?wsdl"</span>;
+<span class="hljs-variable">$sLogin</span>         = <span class="hljs-string">"nome-usuario-horus"</span>;
+<span class="hljs-variable">$sSenha</span>         = <span class="hljs-string">"senha-do-usuario-horus"</span>;</code></pre>
+    <h3 id="83-configurando-as-integrações-de-limpeza-de-cadastros-duplos-cgm-e-cgs">8.3 Configurando as integrações de limpeza de cadastros duplos CGM e CGS</h3>
+    <h5 id="831-para-agendar-a-limpeza-de-cadastros-duplos-cgm-edite-o-crontab-do-usuário-dbseller-através-do-comando">8.3.1 Para agendar a limpeza de cadastros duplos CGM, edite o crontab do usuário <code>dbseller</code> através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># crontab -u dbseller -e</span></code></pre>
+    <p>Em seguida, adicione o seguinte bloco ao final do arquivo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs "><span class="hljs-comment"># DBSeller - Agendamento do script para limpeza de cadastro duplos CGM</span>
+<span class="hljs-number">0</span> <span class="hljs-number">22</span> * * * <span class="hljs-built_in">cd</span> /var/www/html/e-cidade/ ; /usr/bin/php FrontIntegracaoExterna.php --executable duplos.php &gt; duplos.log <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Lembre-se de ajustar o caminho para o diretório do e-cidade conforme o ambiente em que foi instalado.</p>
+    </blockquote>
+    <h5 id="832-para-agendar-a-limpeza-de-cadastros-duplos-cgs-edite-o-crontab-do-usuário-dbseller-através-do-comando">8.3.2 Para agendar a limpeza de cadastros duplos CGS, edite o crontab do usuário <code>dbseller</code> através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># crontab -u dbseller -e</span></code></pre>
+    <p>Em seguida, adicione o seguinte bloco ao final do arquivo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs "><span class="hljs-comment"># DBSeller - Agendamento do script para limpeza de cadastro duplos CGS</span>
+<span class="hljs-number">0</span> <span class="hljs-number">22</span> * * * <span class="hljs-built_in">cd</span> /var/www/html/e-cidade/ ; /usr/bin/php FrontIntegracaoExterna.php --executable duploscgs.php &gt; duploscgs.log <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Lembre-se de ajustar o caminho para o diretório do e-cidade conforme o ambiente em que foi instalado.</p>
+    </blockquote>
+    <h3 id="84-configurando-a-integração-giss">8.4 Configurando a integração GISS</h3>
+    <p>O script de execução da integração GISS possui dois parametros de configuração:</p>
+    <p>1) Se o programa for agendado sem nenhum parâmetro, ou com o parametro <code>1</code>, a integração processará somente os registros alterados.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">.../iss4_gissonline002.php <span class="hljs-number">1</span> &gt; /dev/null <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span></code></pre>
+    <p>2) Se o programa for agendado com o parâmetro <code>2</code>, a integração processará todos os registros.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">.../iss4_gissonline002.php <span class="hljs-number">2</span> &gt; /dev/null <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span></code></pre>
+    <h5 id="841-edite-o-crontab-do-usuário-dbseller-através-do-comando">8.4.1 Edite o crontab do usuário <code>dbseller</code> através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># crontab -u dbseller -e</span></code></pre>
+    <p>Em seguida, adicione o seguinte bloco ao final do arquivo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs "><span class="hljs-comment"># DBSeller - Agendamento do script para execução da integração GISS</span>
+<span class="hljs-number">0</span> <span class="hljs-number">22</span> * * * <span class="hljs-built_in">cd</span> /var/www/html/e-cidade/ ; /usr/bin/php FrontIntegracaoExterna.php --dir integracao_externa/gissonline --executable integracao_externa/gissonline/iss4_gissonline002.php &gt; /dev/null <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Lembre-se de ajustar o caminho para o diretório do e-cidade conforme o ambiente em que foi instalado.</p>
+    </blockquote>
+    <h3 id="85-configurando-a-integração-sigcorp">8.5 Configurando a integração SIGCORP</h3>
+    <h5 id="851-edite-o-crontab-do-usuário-dbseller-através-do-comando">8.5.1 Edite o crontab do usuário <code>dbseller</code> através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># crontab -u dbseller -e</span></code></pre>
+    <p>Em seguida, adicione o seguinte bloco ao final do arquivo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs "><span class="hljs-comment"># DBSeller - Agendamento do script para execução da integração SIGCORP</span>
+<span class="hljs-number">0</span> <span class="hljs-number">22</span> * * * <span class="hljs-built_in">cd</span> /var/www/html/e-cidade/ ; /usr/bin/php FrontIntegracaoExterna.php --dir integracao_externa/sigcorp --executable integracao_externa/sigcorp/iss4_sigcorp001.php &gt; /dev/null <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Lembre-se de ajustar o caminho para o diretório do e-cidade conforme o ambiente em que foi instalado.</p>
+    </blockquote>
+    <h3 id="86-configurando-a-integração-webiss">8.6 Configurando a integração WEBISS</h3>
+    <h5 id="861-edite-o-crontab-do-usuário-dbseller-através-do-comando">8.6.1 Edite o crontab do usuário <code>dbseller</code> através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># crontab -u dbseller -e</span></code></pre>
+    <p>Em seguida, adicione o seguinte bloco ao final do arquivo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs "><span class="hljs-comment"># DBSeller - Agendamento do script para execução da integração WEBISS</span>
+<span class="hljs-number">0</span> <span class="hljs-number">22</span> * * * <span class="hljs-built_in">cd</span> /var/www/html/e-cidade/ ; /usr/bin/php FrontIntegracaoExterna.php --executable integracao_externa/webiss/iss4_webiss001.php &gt; /dev/null <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Lembre-se de ajustar o caminho para o diretório do e-cidade conforme o ambiente em que foi instalado.</p>
+    </blockquote>
+    <h3 id="87-configurando-a-integração-de-geração-das-tabelas-débitos">8.7 Configurando a integração de geração das tabelas débitos</h3>
+    <h5 id="871-para-agendar-a-geração-das-tabelas-débitos-edite-o-crontab-do-usuário-dbseller-através-do-comando">8.7.1 Para agendar a geração das tabelas débitos, edite o crontab do usuário <code>dbseller</code> através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># crontab -u dbseller -e</span></code></pre>
+    <p>Em seguida, adicione o seguinte bloco ao final do arquivo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs "><span class="hljs-comment"># DBSeller - Agendamento do script para geração das tabelas débitos</span>
+<span class="hljs-number">0</span> <span class="hljs-number">20</span> * * * <span class="hljs-built_in">cd</span> /var/www/html/e-cidade/integracao_externa/debitos ; ./debitos.sh &amp;&gt; /dev/null</code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Lembre-se de ajustar o caminho para o diretório do e-cidade conforme o ambiente em que foi instalado.</p>
+    </blockquote>
+    <h3 id="872-configurando-a-integração-débitos">8.7.2 Configurando a integração débitos</h3>
+    <p>O script de execução da integração débitos necessita de um arquivo de configuração para ser executado. <br> Para criar o script de configuração, execute os comandos abaixo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cd /var/www/html/e-cidade/integracao_externa/debitos/libs</span>
+[linux]<span class="hljs-comment"># cp -a debitos.conf.dist debitos.conf</span></code></pre>
+    <p>Em seguida edite o arquivo através do comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim debitos.conf</span></code></pre>
+    <p>Informe o valor das variáveis conforme as descrições abaixo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs "><span class="hljs-comment"># Permite definir a periodicidade com que a manutencao da tabela debitos</span>
+<span class="hljs-comment"># sera executada. O valores permitidos sao: -1=desativa, 0=todos ou dia da semana (1=segunda, 2=terca ... 7=domingo).</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Exemplo:</span>
+<span class="hljs-comment"># DEBITOS_PERIODO="7"</span>
+<span class="hljs-comment">#</span>
+DEBITOS_PERIODO=<span class="hljs-string">""</span>
+
+<span class="hljs-comment"># Permite definir o numero de dias no passado para manter os registros na debitos.</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Exemplo:</span>
+<span class="hljs-comment"># DEBITOS_DIAS_MANTER="14"</span>
+<span class="hljs-comment">#</span>
+DEBITOS_DIAS_MANTER=<span class="hljs-string">""</span>
+
+<span class="hljs-comment"># Permite definir o codigo da(s) instituicao(oes) que deve(em) ser gerada debitos. Se houver</span>
+<span class="hljs-comment"># mais de uma instituicao, os seus codigos devem ser separados por espa�o.</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Exemplo:</span>
+<span class="hljs-comment"># DEBITOS_INSTITUICOES="1"</span>
+<span class="hljs-comment"># DEBITOS_INSTITUICOES="1 3"</span>
+<span class="hljs-comment">#</span>
+DEBITOS_INSTITUICOES=<span class="hljs-string">""</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Lembre-se de ajustar o caminho para o diretório do e-cidade conforme o ambiente em que foi instalado.</p>
+    </blockquote>
+    <h2 id="glossário">Glossário</h2>
+    <table>
+      <thead>
+        <tr>
+          <th align="left">Termo</th>
+          <th align="left">Significado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td align="left">encoding</td>
+          <td align="left"><a href="http://en.wikipedia.org/wiki/Character_encoding">http://en.wikipedia.org/wiki/Character_encoding</a> </td>
+        </tr>
+        <tr>
+          <td align="left">cluster</td>
+          <td align="left"><a href="http://www.postgresql.org/docs/8.2/interactive/creating-cluster.html">http://www.postgresql.org/docs/8.2/interactive/creating-cluster.html</a> </td>
+        </tr>
+        <tr>
+          <td align="left">apt-get</td>
+          <td align="left"><a href="http://www.debian.org/doc/manuals/apt-howto">http://www.debian.org/doc/manuals/apt-howto</a> </td>
+        </tr>
+        <tr>
+          <td align="left">apt-get</td>
+          <td align="left"><a href="http://pt.wikipedia.org/wiki/Advanced_Packaging_Tool">http://pt.wikipedia.org/wiki/Advanced_Packaging_Tool</a> </td>
+        </tr>
+        <tr>
+          <td align="left">vim</td>
+          <td align="left"><a href="http://www.vim.org">http://www.vim.org</a> </td>
+        </tr>
+        <tr>
+          <td align="left">Firefox</td>
+          <td align="left"><a href="http://www.mozilla.org/firefox">http://www.mozilla.org/firefox</a> </td>
+        </tr>
+        <tr>
+          <td align="left">DBSeller Sistemas</td>
+          <td align="left"><a href="http://www.dbseller.com.br">http://www.dbseller.com.br</a> </td>
+        </tr>
+        <tr>
+          <td align="left">proxy</td>
+          <td align="left"><a href="http://pt.wikipedia.org/wiki/Proxy">http://pt.wikipedia.org/wiki/Proxy</a> </td>
+        </tr>
+        <tr>
+          <td align="left">squid</td>
+          <td align="left"><a href="http://pt.wikipedia.org/wiki/Squid">http://pt.wikipedia.org/wiki/Squid</a> </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- fim container -->
+</body>
+</html>

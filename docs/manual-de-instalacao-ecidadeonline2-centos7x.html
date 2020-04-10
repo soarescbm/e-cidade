@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>manual-de-instalacao-ecidadeonline2-centos7x</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="text-justify">
+  <div class="container">
+    <div class="page-header">
+      <h1 id="instalando-o-nota-fiscal-de-serviços-eletrônica-nfs-e-a-partir-dos-fontes-no-linux" class="text-center"><strong>Instalando o Nota Fiscal de Serviços Eletrônica (NFS-e) a partir dos fontes no Linux</strong></h1>
+    </div>
+    <p>A Nota Fiscal de Serviços Eletrônica possui integração com entes públicos que utilizam o sistema e-Cidade, gerando cobranças automáticas no momento da emissão de guias e facilitando o processo de fiscalização. Além disso, o produto permite a integração com outros sistemas de gestão pública, visando sempre atender às necessidades dos nossos clientes.</p>
+    <h2 id="1-instalação-do-centos-7x">1. Instalação do CentOS 7.x</h2>
+    <p>O CentOS, abreviação de Community ENTerprise Operating System, é uma distribuição Linux de classe Enterprise derivada de códigos fonte gratuitamente distribuídos pela Red Hat Enterprise Linux e mantida pelo CentOS Project. Como o uso em servidores pode exigir uma maior compatibilidade com o hardware, a versão indicada para o uso com esta documentação é a CentOS 7.x.</p>
+    <h3 id="11-obtendo-a-mídia-de-instalação">1.1 Obtendo a mídia de instalação</h3>
+    <p>A mídia de instalação pode ser obtida diretamente do site do projeto e gravada em CD, DVD ou pendrive. No site <a href="http://www.centos.org/download/">http://www.centos.org/download/</a> esta disponível a versão mais recente, mas utilizaremos a versão 7 x86_64 disponível em <a href="http://mirror.globo.com/centos/7/isos/x86_64/">http://mirror.globo.com/centos/7/isos/x86_64/</a> (CentOS-7-x86_64-Minimal-1611.iso) por questões de compatibilidade com o produto.</p>
+    <h3 id="12-instalando-o-centos-7x">1.2 Instalando o CentOS 7.x</h3>
+    <p>O processo de instalação do sistema operacional não é coberto por esta documentação, mas recomendamos a utilização da imagem mínima, em “pt_BR” Português do Brasil.</p>
+    <blockquote>
+      <p><strong>Dica:</strong> Maiores informações sobre a instalação e personalização do sistema operacional podem ser obtidas em: <br> <a href="http://wiki.centos.org/Documentation">http://wiki.centos.org/Documentation</a></p>
+    </blockquote>
+    <h3 id="13-editando-os-arquivos-de-configuração">1.3 Editando os arquivos de configuração</h3>
+    <p>Durante o processo de configuração descrito nesta documentação, é necessário editar e modificar diversos arquivos de texto. Para realizar estas modificações, sugerimos a utilização do editor “vim”, mas você pode usar qualquer outro editor de texto de sua preferência.</p>
+    <p>Para instalar o editor de arquivos execute o comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y install vim</span></code></pre>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o editor de textos “vim” podem ser obtidas em: <br> <a href="http://www.vim.org/">http://www.vim.org/</a>.</p>
+    </blockquote>
+    <h3 id="14-desabilitando-o-selinux">1.4 Desabilitando o SELinux</h3>
+    <blockquote>
+      <p><strong>Atenção:</strong> Se você tiver problemas com a execução do Apache, certifique-se que o contexto de seus arquivos de configuração do Apache estão corretamente configurados no SELinux, ou altere o modo de execução do SELinux para permissivo, ou desative-o.</p>
+    </blockquote>
+    <p>Para desativar o SELinux, edite o arquivo de configuração através do comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /etc/selinux/config</span></code></pre>
+    <p>Altere a linha de:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">SELINUX=enforcing</code></pre>
+    <p>Para:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">SELINUX=disabled</code></pre>
+    <blockquote>
+      <p><strong>Dica:</strong> Note que o valor correto é <code>disabled</code>, muitos usuários digitam apenas <code>disable</code>.</p>
+    </blockquote>
+    <h3 id="15-instalando-o-repositório-epel">1.5 Instalando o repositório EPEL</h3>
+    <p>Para instalar o repositório de Pacotes Adicionais para Enterprise Linux (EPEL), execute o comando abaixo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y install epel-release</span></code></pre>
+    <h3 id="16-instalando-o-repositório-remi">1.6 Instalando o repositório REMI</h3>
+    <p>Para instalar o repositório, execute o comando abaixo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y localinstall http://rpms.famillecollet.com/enterprise/remi-release-7.rpm</span></code></pre>
+    <h3 id="17-atualizando-o-sistema-operacional">1.7 Atualizando o sistema operacional</h3>
+    <p>Após a instalação, recomendamos a atualização dos pacotes do sistema operacional, para realizar esta tarefa, execute o comando abaixo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y update</span></code></pre>
+    <h3 id="18-reinicie-o-servidor">1.8 Reinicie o servidor</h3>
+    <p>Para reiniciar o servidor, utilize o comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># shutdown -r now</span></code></pre>
+    <h2 id="2-instalação-do-postgresql-95x">2. Instalação do PostgreSQL 9.5.x</h2>
+    <p>PostgreSQL é um sistema gerenciador de banco de dados objeto relacional (SGBDOR), desenvolvido como projeto de código aberto sem custo de licença. Este é o programa que vai gerenciar e armazenar o banco de dados relacional utilizado pelo NFS-e.</p>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o PostgreSQL podem ser obtidas em: <br> <a href="http://www.postgresql.org/">http://www.postgresql.org/</a>.</p>
+    </blockquote>
+    <h3 id="21-configurando-o-repositório">2.1 Configurando o repositório</h3>
+    <p>Para instalar o PostgreSQL 9.5.x e suas dependências, utilizaremos o gerenciador de pacotes <code>yum</code>, que nos prove as últimas atualizações dos pacotes requeridos através de um canal seguro e confiável.</p>
+    <h5 id="211-instale-o-repositório-através-do-comando">2.1.1 Instale o repositório através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y localinstall https://yum.postgresql.org/9.5/redhat/rhel-7.2-x86_64/pgdg-centos95-9.5-3.noarch.rpm</span></code></pre>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o gerenciador de pacotes “yum” podem ser obtidas em: <br> <a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/ch-yum.html">https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/ch-yum.html</a></p>
+    </blockquote>
+    <h3 id="22-instalando-o-postgresql-95x">2.2 Instalando o PostgreSQL 9.5.x</h3>
+    <p>Para realizar a instalação do PostgreSQL 9.5.x através do gerenciador de pacotes execute o comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y install postgresql95 postgresql95-contrib postgresql95-server</span></code></pre>
+    <h3 id="23-criando-e-configurando-o-cluster">2.3 Criando e configurando o cluster</h3>
+    <p>O NFS-e utiliza encoding UTF-8 no cluster do PostgreSQL 9.5.x. Por isso vamos parar, remover e recriar o cluster quer será utilizado pela aplicação.</p>
+    <blockquote>
+      <p><strong>Atenção:</strong> O NFS-e não pode ser instalado no mesmo cluster dos demais produtos como: e-cidade, e-cidadeonline, etc. <code>A codificação utilizada pelo NFS-e é UTF-8, enquanto que nos outros produtos é LATIN1!</code></p>
+      <p><strong>Dica:</strong> Mais informações sobre a configuração do cluster: <br> <a href="http://www.postgresql.org/docs/9.5/static/sql-cluster.html">http://www.postgresql.org/docs/9.5/static/sql-cluster.html</a></p>
+    </blockquote>
+    <h5 id="231-vamos-criar-o-novo-cluster-do-banco-de-dados-como-utf-8-usando-os-comandos">2.3.1 Vamos criar o novo cluster do banco de dados como UTF-8 usando os comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># export LC_ALL=pt_BR.UTF-8</span>
+[linux]<span class="hljs-comment"># su - postgres -c "/usr/pgsql-9.5/bin/initdb -A trust -D /var/lib/pgsql/9.5/data -E UTF-8 --locale=pt_BR.UTF-8 -U postgres"</span></code></pre>
+    <h5 id="232-para-a-correta-integração-com-o-nfs-e-é-necessário-alterar-algumas-configurações-do-cluster-criado-através-do-comando">2.3.2 Para a correta integração com o NFS-e, é necessário alterar algumas configurações do cluster criado através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/lib/pgsql/9.5/data/postgresql.conf</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Os demais parâmetros, não descritos aqui, não precisam ser alterados.</p>
+    </blockquote>
+    <p>Localize e altere as linhas do arquivo do arquivo de configuração, descomentando-as se necessário (remover o caractere <code>#</code> do início da linha), substituindo os valores correspondentes conforme a indicação abaixo.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">listen_addresses = <span class="hljs-string">'*'</span>
+max_connections = <span class="hljs-number">20</span></code></pre>
+    <h5 id="233-inicie-o-servidor-postgresql-através-do-comando">2.3.3 Inicie o servidor PostgreSQL através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># systemctl start postgresql-9.5</span></code></pre>
+    <h5 id="234-verifique-o-resultado-da-configuração-usando-o-comando">2.3.4 Verifique o resultado da configuração usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># psql -U postgres -h localhost -l</span></code></pre>
+    <p>A saída do comando deve ser parecida com os valores abaixo.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">   Nome    |   Dono   | Codificação |     Collate      |      C<span class="hljs-built_in">type</span>       | Privilégios de acesso
+-----------+----------+-------------+------------------+------------------+-----------------------
+ postgres  | postgres | UTF8        | pt_BR.UTF-<span class="hljs-number">8</span>      | pt_BR.UTF-<span class="hljs-number">8</span>      |
+ template0 | postgres | UTF8        | pt_BR.UTF-<span class="hljs-number">8</span>      | pt_BR.UTF-<span class="hljs-number">8</span>      | =c/postgres          +
+           |          |             |                  |                  | postgres=CTc/postgres
+ template1 | postgres | UTF8        | pt_BR.UTF-<span class="hljs-number">8</span>      | pt_BR.UTF-<span class="hljs-number">8</span>      | =c/postgres          +
+           |          |             |                  |                  | postgres=CTc/postgres</code></pre>
+    <h5 id="235-adicione-o-serviço-do-postgressql-a-inicialização-do-sistema-operacional-usando-o-comando">2.3.5 Adicione o serviço do PostgresSQL a inicialização do sistema operacional usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># systemctl enable postgresql-9.5</span></code></pre>
+    <h3 id="24-criando-a-estrutura-de-banco-de-dados-para-o-nfs-e">2.4 Criando a estrutura de banco de dados para o NFS-e</h3>
+    <p>Vamos criar os usuários necessários para o funcionamento do NFS-e através dos comandos:</p>
+    <blockquote>
+      <p><strong>Atenção:</strong> Em ambientes de produção, nunca utilize senhas que tenham o mesmo nome da conta de usuário. Mais informações sobre segurança de senhas podem ser obtidas em: <br> <a href="http://cartilha.cert.br/senhas/">http://cartilha.cert.br/senhas/</a>.</p>
+    </blockquote>
+    <pre class="prettyprint"><code class="language-bash hljs ">psql -U postgres -c <span class="hljs-string">"CREATE ROLE nfse WITH SUPERUSER LOGIN PASSWORD 'nfse';"</span></code></pre>
+    <p>Em seguida, utilize o comando abaixo para criar o banco de dados:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">psql -U postgres -c <span class="hljs-string">"CREATE DATABASE nfse OWNER nfse;"</span></code></pre>
+    <h2 id="3-instalação-do-apache">3. Instalação do Apache</h2>
+    <p>Apache é o servidor web mais usado em sistemas Linux. Servidores web são usados para servir páginas Web que, normalmente, são solicitadas pelos computadores clientes através de navegador, como o Firefox, Chromium, etc.</p>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o Apache podem ser obtidas em: <br> <a href="http://www.apache.org/">http://www.apache.org/</a>.</p>
+    </blockquote>
+    <h3 id="31-instalando-o-apache">3.1 Instalando o Apache</h3>
+    <p>Para realizar a instalação do servidor web Apache através do gerenciador de pacotes, execute o comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y install httpd</span></code></pre>
+    <h3 id="32-configurando-o-apache">3.2 Configurando o Apache</h3>
+    <h5 id="321-para-a-correta-integração-com-o-nfs-e-é-necessário-alterar-algumas-configurações-do-apache-edite-o-arquivo-de-configuração-através-do-comando">3.2.1 Para a correta integração com o NFS-e, é necessário alterar algumas configurações do apache, edite o arquivo de configuração através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /etc/httpd/conf/httpd.conf</span></code></pre>
+    <p>Localize os parâmetros e o bloco abaixo:</p>
+    <pre class="prettyprint"><code class="language-php hljs ">
+DocumentRoot <span class="hljs-string">"/var/www/html"</span>
+
+&lt;Directory <span class="hljs-string">"/var/www/html"</span>&gt;
+    <span class="hljs-comment">#</span>
+    <span class="hljs-comment"># Possible values for the Options directive are "None", "All",</span>
+    <span class="hljs-comment"># or any combination of:</span>
+    <span class="hljs-comment">#   Indexes Includes FollowSymLinks SymLinksifOwnerMatch ExecCGI MultiViews</span>
+    <span class="hljs-comment">#</span>
+    <span class="hljs-comment"># Note that "MultiViews" must be named *explicitly* --- "Options All"</span>
+    <span class="hljs-comment"># doesn't give it to you.</span>
+    <span class="hljs-comment">#</span>
+    <span class="hljs-comment"># The Options directive is both complicated and important.  Please see</span>
+    <span class="hljs-comment"># http://httpd.apache.org/docs/2.4/mod/core.html#options</span>
+    <span class="hljs-comment"># for more information.</span>
+    <span class="hljs-comment">#</span>
+    Options Indexes FollowSymLinks
+
+    <span class="hljs-comment">#</span>
+    <span class="hljs-comment"># AllowOverride controls what directives may be placed in .htaccess files.</span>
+    <span class="hljs-comment"># It can be "All", "None", or any combination of the keywords:</span>
+    <span class="hljs-comment">#   Options FileInfo AuthConfig Limit</span>
+    <span class="hljs-comment">#</span>
+    AllowOverride None
+
+    <span class="hljs-comment">#</span>
+    <span class="hljs-comment"># Controls who can get stuff from this server.</span>
+    <span class="hljs-comment">#</span>
+    <span class="hljs-keyword">Require</span> all granted
+&lt;/Directory&gt;
+</code></pre>
+    <p>E altere para:</p>
+    <pre class="prettyprint"><code class="language-php hljs ">DocumentRoot <span class="hljs-string">"/var/www/html/nfse/public"</span>
+
+&lt;Directory <span class="hljs-string">"/var/www/html/nfse/public"</span>&gt;
+    DirectoryIndex index.php
+    Options -Indexes +FollowSymLinks +MultiViews
+    AllowOverride All
+    <span class="hljs-keyword">Require</span> all granted
+&lt;/Directory&gt;
+
+SetEnv APPLICATION_ENV <span class="hljs-string">"production"</span>
+SetEnv no-gzip <span class="hljs-number">1</span></code></pre>
+    <p>Localize o bloco abaixo:</p>
+    <pre class="prettyprint"><code class="language-php hljs ">&lt;IfModule dir_module&gt;
+    DirectoryIndex index.html
+&lt;/IfModule&gt;</code></pre>
+    <p>E altere para:</p>
+    <pre class="prettyprint"><code class="language-php hljs ">&lt;IfModule dir_module&gt;
+    DirectoryIndex index.php index.html
+&lt;/IfModule&gt;</code></pre>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o VirtualHost podem ser obtidas em: <br> <a href="http://httpd.apache.org/docs/current/vhosts/examples.html">http://httpd.apache.org/docs/current/vhosts/examples.html</a>.</p>
+    </blockquote>
+    <h3 id="33-adicione-o-serviço-do-apache-a-inicialização-do-sistema-operacional-usando-o-comando">3.3 Adicione o serviço do Apache a inicialização do sistema operacional usando o comando:</h3>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># systemctl enable httpd</span></code></pre>
+    <h2 id="4-instalação-do-php-56-e-php-fpm">4. Instalação do PHP 5.6 e PHP-FPM</h2>
+    <p>PHP é uma linguagem interpretada livre, usada originalmente apenas para o desenvolvimento de aplicações presentes e atuantes no lado do servidor, capazes de gerar conteúdo dinâmico na World Wide Web.</p>
+    <p>O PHP-FPM é uma alternativa ao PHP FastCGI com muitas funcionalidades voltadas a sites com grande número de acessos e carga.</p>
+    <blockquote>
+      <p><strong>Dica:</strong> Mais informações sobre o PHP podem ser obtidas em: <br> <a href="http://www.php.net/">http://www.php.net/</a> e <a href="http://php-fpm.org/">http://php-fpm.org/</a></p>
+    </blockquote>
+    <h3 id="41-instalando-o-php-56-e-o-php-fpm">4.1 Instalando o PHP 5.6 e o PHP-FPM</h3>
+    <p>Para realizar a instalação do PHP 5.6 através do gerenciador de pacotes, execute o comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># yum -y install php56 php56-php-cli php56-php-common php56-php-pear php56-php-pecl-jsonc php56-php-pecl-zip php56-php-process php56-php-xml php56-runtime php56-php-bcmath php56-php-gd php56-php-interbase php56-php-pecl-jsonc php56-php-mbstring php56-php-mcrypt php56-php-pgsql php56-php-soap php56-php-pecl-sqlite php56-php-xmlrpc php56-php-pecl-zip php56-php-fpm unzip zip xz xz-lzma-compat bzip2</span></code></pre>
+    <h3 id="42-configurando-o-php-56-e-o-php-fpm">4.2 Configurando o PHP 5.6 e o PHP-FPM</h3>
+    <h5 id="421-habilitar-as-dependências-de-configuração-através-do-comando">4.2.1 Habilitar as dependências de configuração através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /etc/httpd/conf.d/php5.6-fpm.conf</span></code></pre>
+    <pre class="prettyprint"><code class="language-bash hljs ">&lt;IfModule !mod_php5.c&gt;
+&lt;IfModule proxy_fcgi_module&gt;
+    &lt;IfModule setenvif_module&gt;
+    SetEnvIfNoCase ^Authorization$ <span class="hljs-string">"(.+)"</span> HTTP_AUTHORIZATION=<span class="hljs-variable">$1</span>
+    &lt;/IfModule&gt;
+    &lt;FilesMatch <span class="hljs-string">".+\.ph(p[3457]?|t|tml)$"</span>&gt;
+        SetHandler <span class="hljs-string">"proxy:fcgi://127.0.0.1:9000/"</span>
+    &lt;/FilesMatch&gt;
+    &lt;Proxy <span class="hljs-string">"fcgi://127.0.0.1:9000/"</span>&gt;
+    &lt;/Proxy&gt;
+    &lt;FilesMatch <span class="hljs-string">".+\.phps$"</span>&gt;
+        Require all denied
+    &lt;/FilesMatch&gt;
+    &lt;FilesMatch <span class="hljs-string">"^\.ph(p[3457]?|t|tml|ps)$"</span>&gt;
+        Require all denied
+    &lt;/FilesMatch&gt;
+&lt;/IfModule&gt;
+&lt;/IfModule&gt;</code></pre>
+    <h5 id="422-configurar-o-arquivo-de-pool-do-php-fpm-através-dos-comandos">4.2.2 Configurar o arquivo de pool do PHP-FPM através dos comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /opt/remi/php56/root/etc/php-fpm.d/www.conf</span></code></pre>
+    <p>Localize as linhas abaixo:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">php_admin_value[error_log] = /opt/remi/php56/root/var/log/php-fpm/www-error.log
+php_admin_flag[log_errors] = on</code></pre>
+    <p>E altere para:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">;php_admin_value[error_log] = /opt/remi/php56/root/var/log/php-fpm/www-error.log
+;php_admin_flag[log_errors] = on</code></pre>
+    <h5 id="423-configurar-o-arquivo-de-log-do-php-fpm-através-dos-comandos">4.2.3 Configurar o arquivo de log do PHP-FPM através dos comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># touch /var/log/php_errors.log</span>
+[linux]<span class="hljs-comment"># chown apache.apache /var/log/php_errors.log</span></code></pre>
+    <h5 id="424-para-a-correta-integração-com-o-nfs-e-é-necessário-alterar-algumas-configurações-do-php-através-do-comando">4.2.4 Para a correta integração com o NFS-e, é necessário alterar algumas configurações do PHP através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /opt/remi/php56/root/etc/php.ini</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Os demais parâmetros, não descritos aqui, não precisam ser alterados.</p>
+    </blockquote>
+    <p>Localize e altere as linhas do arquivo do arquivo de configuração, descomentando-as se necessário (remover o caractere <code>;</code> do início da linha), substituindo os valores correspondentes conforme a indicação abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs ">short_open_tag = On
+session.gc_maxlifetime = <span class="hljs-number">7200</span>
+date.timezone = <span class="hljs-string">"America/Sao_Paulo"</span></code></pre>
+    <h5 id="425-por-questões-de-compatibilidade-o-nfs-e-é-necessário-criar-um-link-simbólico-para-o-binário-do-php-através-do-comando">4.2.5 Por questões de compatibilidade o NFS-e, é necessário criar um link simbólico para o binário do PHP através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># ln -s /opt/remi/php56/root/usr/bin/php /usr/bin/php</span></code></pre>
+    <h5 id="426-reinicie-o-serviço-do-php-fpm-usando-o-comando">4.2.6 Reinicie o serviço do PHP-FPM usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># systemctl restart php56-php-fpm</span></code></pre>
+    <h3 id="43-adicione-o-serviço-do-php-fpm-a-inicialização-do-sistema-operacional-usando-o-comando">4.3 Adicione o serviço do PHP-FPM a inicialização do sistema operacional usando o comando:</h3>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># systemctl enable php56-php-fpm</span></code></pre>
+    <h2 id="5-instalação-do-nfs-e">5. Instalação do NFS-e</h2>
+    <h3 id="51-obtendo-o-pacote-de-instalação">5.1 Obtendo o pacote de instalação</h3>
+    <p>O pacote de instalação pode ser obtido diretamente do site do Portal do Software Público. No endereço da comunidade do e-cidade (<a href="https://softwarepublico.gov.br/social/e-cidade">https://softwarepublico.gov.br/social/e-cidade</a>) estão disponíveis as últimas versões e suas atualizações. Como estamos realizando uma nova instalação, você deve baixar o pacote <code>completo</code>, um exemplo de nome do pacote seria: <code>e-cidadeonline2.completo.Vxxxxxx.tar.bz2</code>.</p>
+    <h3 id="52-configurando-o-servidor">5.2 Configurando o servidor</h3>
+    <h5 id="521-vamos-criar-um-usuário-administrativo-para-o-nfs-e-neste-exemplo-criaremos-o-usuário-dbseller-através-do-comando">5.2.1 Vamos criar um usuário administrativo para o NFS-e, neste exemplo criaremos o usuário <code>dbseller</code> através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># useradd -d /home/dbseller -g apache -G wheel -k /etc/skel -m -s /bin/bash dbseller</span></code></pre>
+    <h5 id="522-em-seguida-vamos-definir-uma-senha-para-este-novo-usuário-usando-o-comando">5.2.2 Em seguida, vamos definir uma senha para este novo usuário usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># passwd dbseller</span></code></pre>
+    <blockquote>
+      <p><strong>Dica:</strong> Neste exemplo, defina a senha como o mesmo nome de usuário, como “dbseller”.</p>
+      <p><strong>Atenção:</strong> Em ambientes de produção, nunca utilize senhas que tenham o mesmo nome da conta de usuário. Mais informações sobre segurança de senhas podem ser obtidas em: <br> <a href="http://cartilha.cert.br/senhas/">http://cartilha.cert.br/senhas/</a>.</p>
+    </blockquote>
+    <h5 id="523-agora-vamos-habilitar-a-autenticação-do-grupo-wheel-editando-o-arquivo-usando-o-comando">5.2.3 Agora vamos habilitar a autenticação do grupo <code>wheel</code> editando o arquivo usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /etc/pam.d/su</span></code></pre>
+    <p>Localize e descomente a linha como mostrado abaixo.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">auth            required        pam_wheel.so use_uid</code></pre>
+    <h5 id="524-para-encaminhar-os-e-mails-destinados-ao-usuário-root-para-o-usuário-dbseller-edite-o-arquivo-através-do-comando">5.2.4 Para encaminhar os e-mails destinados ao usuário <code>root</code> para o usuário <code>dbseller</code>, edite o arquivo através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /etc/aliases</span></code></pre>
+    <p>Mova o cursor até o fim do arquivo e insira alinha como mostrado abaixo.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">root:           dbseller</code></pre>
+    <p>Em seguida, execute o comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># newaliases</span></code></pre>
+    <h5 id="525-também-devemos-corrigir-a-máscara-de-criação-de-arquivos-modificando-os-arquivos-através-dos-comandos">5.2.5 Também devemos corrigir a máscara de criação de arquivos modificando os arquivos através dos comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /etc/login.defs</span></code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Os demais parâmetros, não descritos aqui, não precisam ser alterados.</p>
+    </blockquote>
+    <p>Localize e altere a linha do arquivo do arquivo de configuração, descomentando-a se necessário (remover o caractere <code>#</code> do início da linha), substituindo o valor correspondente conforme a indicação abaixo.</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">UMASK           <span class="hljs-number">002</span></code></pre>
+    <p>Em seguida, execute o comando abaixo para ajustar os arquivos criados pelo apache:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># echo "umask 002" &gt;&gt; /etc/sysconfig/httpd</span></code></pre>
+    <h3 id="53-configurando-o-acesso-do-webservice-no-e-cidade">5.3 Configurando o acesso do webservice no e-cidade</h3>
+    <p>O NFS-e se comunica com o e-cidade através de um webservice, para que essa comunicação seja possível, é necessário liberar o acesso no e-cidade.</p>
+    <h5 id="531-liberando-o-acesso-ao-webservice-do-e-cidade">5.3.1 Liberando o acesso ao webservice do e-cidade</h5>
+    <p>Após realizar o login no e-cidade, acesse:</p>
+    <ol>
+      <li>Selecione a instituição da prefeitura;</li>
+      <li>Selecione o módulo <code>DB:Configuração</code>;</li>
+      <li>Selecione o módulo <code>Configuração</code>;</li>
+      <li>Selecione o menu <code>Cadastros</code>;</li>
+      <li>Selecione o menu <code>Cadastro de Acessos ao Sistema</code>;</li>
+      <li>Selecione o menu <code>Inclusão</code>;</li>
+    </ol>
+    <p>Em seguida, preencha os campos conforme as instruções abaixo:</p>
+    <ol>
+      <li>No campo <code>Data Início</code>, selecione a data de hoje;</li>
+      <li>No campo <code>Hora Início</code>, informe o valor <code>08:00</code>;</li>
+      <li>No campo <code>Data Final</code>, selecione uma data no futuro, como o valor <code>31/12/2099</code>;</li>
+      <li>No campo <code>Hora Final</code>, informe o valor <code>08:00</code>;</li>
+      <li>No campo <code>Observação</code>, informe o valor <code>Acesso ao webservice pelo NFS-e</code>;</li>
+      <li>Clique no botão <code>Incluir</code>.</li>
+    </ol>
+    <p><img src="img/DBconfigregra.png" alt="" title=""></p>
+    <p>Após incluir o acesso, clique na aba <code>Usuário</code> e selecione no campo <code>Cod. Usuário</code> o usuário que será utilizado para comunicação com o webservice, em seguida, clique no botão <code>Alterar</code>.</p>
+    <p><img src="img/DBconfigusu.png" alt="" title=""></p>
+    <p>Após incluir o usuário, clique na aba <code>IP/Máscara</code> e informe o valor no campo <code>Máscara do IP</code> o endereço IP do servidor do NFS-e que será utilizado para comunicação com o webservice do e-cidade, em seguida, clique no botão <code>Alterar</code>.</p>
+    <p><img src="img/DBconfigip.png" alt="" title=""></p>
+    <h3 id="54-instalando-o-nfs-e">5.4 Instalando o NFS-e</h3>
+    <h5 id="541-descompacte-o-pacote-do-nfs-e-através-do-comando">5.4.1 Descompacte o pacote do NFS-e através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># tar xjf e-cidadeonline2.completo.Vxxxxxx.tar.bz2</span></code></pre>
+    <h5 id="542-copie-o-diretório-do-nfs-e-para-o-diretório-raiz-do-apache-usando-o-comando">5.4.2 Copie o diretório do NFS-e para o diretório raiz do Apache usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp -r e-cidadeonline2.completo.Vxxxxxx /var/www/html/nfse</span></code></pre>
+    <h3 id="55-configurando-o-nfs-e">5.5 Configurando o NFS-e</h3>
+    <h5 id="551-crie-o-arquivo-de-configuração-da-aplicação-através-do-comando">5.5.1 Crie o arquivo de configuração da aplicação através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp /var/www/html/nfse/application/configs/application.ini.dist /var/www/html/nfse/application/configs/application.ini</span></code></pre>
+    <p>Utilize o seguinte comando para editar o arquivo de configuração:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/www/html/nfse/application/configs/application.ini</span></code></pre>
+    <p>Em seguida, atualize as configurações conforme o exemplo abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs ">...
+doctrine.connectionParameters.dbname                    = <span class="hljs-string">"nfse"</span>
+doctrine.connectionParameters.host                      = <span class="hljs-string">"localhost"</span>
+doctrine.connectionParameters.password                  = <span class="hljs-string">"nfse"</span>
+doctrine.connectionParameters.port                      = <span class="hljs-string">"5432"</span>
+doctrine.connectionParameters.user                      = <span class="hljs-string">"nfse"</span>
+<span class="hljs-comment">// Verifique a versão do sistema em /var/www/html/nfse/versao.txt</span>
+ecidadeonline2.versao                                   = <span class="hljs-string">"V011114"</span>
+resources.mail.transport.host                           = <span class="hljs-string">"smtp.exemplo.com"</span>
+resources.mail.transport.password                       = <span class="hljs-string">"nfse@exemplo.com"</span>
+resources.mail.transport.port                           = <span class="hljs-string">"587"</span>
+resources.mail.transport.username                       = <span class="hljs-string">"nfse@exemplo.com"</span>
+resources.mail.defaultFrom.email                        = <span class="hljs-string">"nfse@exemplo.com"</span>
+resources.mail.defaultFrom.name                         = <span class="hljs-string">"NFS-e Nome da Prefeitura"</span>
+settings.application.cache                              = <span class="hljs-string">"011114"</span>
+webservice.client.uri                                   = <span class="hljs-string">"http://url_acesso_ecidade/e-cidade/"</span>
+webservice.client.url                                   = <span class="hljs-string">"http://url_acesso_ecidade/e-cidade/"</span>
+webservice.client.location                              = <span class="hljs-string">"http://url_acesso_ecidade/e-cidade/webservices/requisicao.webservice.php"</span>
+<span class="hljs-comment">// md5 do ID do usuário selecionado na regra de acesso do e-cidade</span>
+webservice.cliente.user                                 = <span class="hljs-string">"c4ca4238a0b923820dcc509a6f75849b"</span>
+...</code></pre>
+    <h5 id="552-crie-os-arquivos-de-configuração-do-webservice-através-dos-comandos">5.5.2 Crie os arquivos de configuração do webservice através dos comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp /var/www/html/nfse/application/configs/webservice-ecidade.ini.dist /var/www/html/nfse/application/configs/webservice-ecidade.ini</span></code></pre>
+    <p>Utilize o seguinte comando para editar o arquivo de configuração:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/www/html/nfse/application/configs/webservice-ecidade.ini</span></code></pre>
+    <p>Em seguida, atualize as configurações conforme o exemplo abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs ">...
+DB_id_usuario          = <span class="hljs-string">'Id do usuário que criou a regra de acesso'</span>;
+DB_login               = <span class="hljs-string">'Login o usuário que criou a regra de acesso'</span>;
+DB_ip                  = <span class="hljs-string">'IP de acesso ao servidor do E-cidade'</span>;
+SERVER_ADDR            = <span class="hljs-string">'IP local do servidor do E-cidade'</span>;
+SERVER_PORT            = <span class="hljs-string">'Porta local do servidor do E-cidade'</span>;
+DOCUMENT_ROOT          = <span class="hljs-string">'Diretório raiz do E-cidade ex: /var/wwww'</span>;
+SERVER_ADMIN           = <span class="hljs-string">'e-mail do administrador do servidor web'</span>;
+PHP_SELF               = <span class="hljs-string">'webservices/requisicao.webservice.php'</span>;
+HTTP_HOST              = <span class="hljs-string">'Nome do host do E-cidade ex localhost'</span>;
+...</code></pre>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp /var/www/html/nfse/public/webservice/wsdlValidations/producao/modelo1.wsdl.dist /var/www/html/nfse/public/webservice/wsdlValidations/producao/modelo1.wsdl</span></code></pre>
+    <p>Utilize o seguinte comando para editar o arquivo de configuração:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/www/html/nfse/public/webservice/wsdlValidations/producao/modelo1.wsdl</span></code></pre>
+    <p>Em seguida, altere todos os valores <code>{URL}</code>, pela URL do NFS-e conforme o exemplo abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs ">...
+xmlns:ii=<span class="hljs-string">"http://{URL}/webservice/index/producao"</span>
+...</code></pre>
+    <p>Um exemplo de como ficaria a configuração, se fosse configurado um nome de domínio no <code>VirtualHost</code>:</p>
+    <pre class="prettyprint"><code class="language-php hljs ">...
+xmlns:ii=<span class="hljs-string">"http://nfse.prefeitura.gov.br/webservice/index/producao"</span>
+...</code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Existem diversas linhas que devem ser substituídas, você deve verificar todo o arquivo.</p>
+      <p><strong>Atenção:</strong> Utilize a mesma <code>URL</code> configurada no <code>VirtualHost</code> do apache, ou o endereço IP do servidor.</p>
+    </blockquote>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp /var/www/html/nfse/public/webservice/wsdlValidations/homologacao/modelo1.wsdl.dist /var/www/html/nfse/public/webservice/wsdlValidations/homologacao/modelo1.wsdl</span></code></pre>
+    <p>Utilize o seguinte comando para editar o arquivo de configuração:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/www/html/nfse/public/webservice/wsdlValidations/homologacao/modelo1.wsdl</span></code></pre>
+    <p>Em seguida, altere todos os valores <code>{URL}</code>, pela URL do NFS-e conforme o exemplo abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs ">...
+xmlns:ii=<span class="hljs-string">"http://{URL}/webservice/index/homologacao"</span>
+...</code></pre>
+    <p>Um exemplo de como ficaria a configuração, se fosse configurado um nome de domínio no <code>VirtualHost</code>:</p>
+    <pre class="prettyprint"><code class="language-php hljs ">...
+xmlns:ii=<span class="hljs-string">"http://nfse.prefeitura.gov.br/webservice/index/homologacao"</span>
+...</code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Existem diversas linhas que devem ser substituídas, você deve verificar todo o arquivo.</p>
+      <p><strong>Atenção:</strong> Utilize a mesma <code>URL</code> configurada no <code>VirtualHost</code> do apache, ou o endereço IP do servidor.</p>
+    </blockquote>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cp /var/www/html/nfse/public/webservice/wsdlValidations/integracao/modelo1.wsdl.dist /var/www/html/nfse/public/webservice/wsdlValidations/integracao/modelo1.wsdl</span></code></pre>
+    <p>Utilize o seguinte comando para editar o arquivo de configuração:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># vim /var/www/html/nfse/public/webservice/wsdlValidations/integracao/modelo1.wsdl</span></code></pre>
+    <p>Em seguida, altere todos os valores <code>{URL}</code>, pela URL do NFS-e conforme o exemplo abaixo.</p>
+    <pre class="prettyprint"><code class="language-php hljs ">...
+xmlns:ii=<span class="hljs-string">"http://{URL}/webservice/index/integracao"</span>
+...</code></pre>
+    <p>Um exemplo de como ficaria a configuração, se fosse configurado um nome de domínio no <code>VirtualHost</code>:</p>
+    <pre class="prettyprint"><code class="language-php hljs ">...
+xmlns:ii=<span class="hljs-string">"http://nfse.prefeitura.gov.br/webservice/index/integracao"</span>
+...</code></pre>
+    <blockquote>
+      <p><strong>Atenção:</strong> Existem diversas linhas que devem ser substituídas, você deve verificar todo o arquivo.</p>
+      <p><strong>Atenção:</strong> Utilize a mesma <code>URL</code> configurada no <code>VirtualHost</code> do apache, ou o endereço IP do servidor.</p>
+    </blockquote>
+    <h5 id="553-ajuste-as-permissões-dos-diretórios-através-dos-comandos">5.5.3 Ajuste as permissões dos diretórios através dos comandos:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># chown -R dbseller.apache /var/www/html/nfse</span>
+[linux]<span class="hljs-comment"># chmod -R 775 /var/www/html/nfse</span></code></pre>
+    <p>Em seguida, limpe qualquer cache existente através do comando:</p>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># rm -rf /var/www/html/nfse/application/data/Proxy/*</span></code></pre>
+    <h5 id="554-faça-a-carga-do-schema-do-nfs-e-através-do-comando">5.5.4 Faça a carga do <code>schema</code> do NFS-e através do comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># cd /var/www/html/nfse</span>
+[linux]<span class="hljs-comment"># php bin/ruckus.php db:migrate</span></code></pre>
+    <h5 id="555-reinicie-o-serviço-do-apache-usando-o-comando">5.5.5 Reinicie o serviço do Apache usando o comando:</h5>
+    <pre class="prettyprint"><code class="language-bash hljs ">[linux]<span class="hljs-comment"># systemctl restart httpd</span></code></pre>
+    <h3 id="56-acessando-o-nfs-e">5.6 Acessando o NFS-e</h3>
+    <p>Após finalizar os procedimentos de instalação e configuração, abra um navegador e acesse o NFS-e através do endereço IP ou nome do servidor. EX: <a href="http://nfse.prefeitura.gov.br/">http://nfse.prefeitura.gov.br/</a>, utilize como nome de usuário <code>admin</code>, e e como senha <code>123456</code>.</p>
+    <blockquote>
+      <p><strong>Atenção:</strong> Altere a senha ao realizar o primeiro acesso. Mais informações sobre segurança de senhas podem ser obtidas em: <a href="http://cartilha.cert.br/senhas/">http://cartilha.cert.br/senhas/</a>.</p>
+    </blockquote>
+    <h2 id="glossário">Glossário</h2>
+    <table>
+      <thead>
+        <tr>
+          <th align="left">Termo</th>
+          <th align="left">Significado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td align="left">encoding</td>
+          <td align="left"><a href="http://en.wikipedia.org/wiki/Character_encoding">http://en.wikipedia.org/wiki/Character_encoding</a></td>
+        </tr>
+        <tr>
+          <td align="left">cluster</td>
+          <td align="left"><a href="http://www.postgresql.org/docs/8.2/interactive/creating-cluster.html">http://www.postgresql.org/docs/8.2/interactive/creating-cluster.html</a></td>
+        </tr>
+        <tr>
+          <td align="left">apt-get</td>
+          <td align="left"><a href="http://www.debian.org/doc/manuals/apt-howto">http://www.debian.org/doc/manuals/apt-howto</a></td>
+        </tr>
+        <tr>
+          <td align="left">apt-get</td>
+          <td align="left"><a href="http://pt.wikipedia.org/wiki/Advanced_Packaging_Tool">http://pt.wikipedia.org/wiki/Advanced_Packaging_Tool</a></td>
+        </tr>
+        <tr>
+          <td align="left">vim</td>
+          <td align="left"><a href="http://www.vim.org">http://www.vim.org</a></td>
+        </tr>
+        <tr>
+          <td align="left">Firefox</td>
+          <td align="left"><a href="http://www.mozilla.org/firefox">http://www.mozilla.org/firefox</a></td>
+        </tr>
+        <tr>
+          <td align="left">DBSeller Sistemas</td>
+          <td align="left"><a href="http://www.dbseller.com.br">http://www.dbseller.com.br</a></td>
+        </tr>
+        <tr>
+          <td align="left">proxy</td>
+          <td align="left"><a href="http://pt.wikipedia.org/wiki/Proxy">http://pt.wikipedia.org/wiki/Proxy</a></td>
+        </tr>
+        <tr>
+          <td align="left">squid</td>
+          <td align="left"><a href="http://pt.wikipedia.org/wiki/Squid">http://pt.wikipedia.org/wiki/Squid</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- fim container -->
+</body>
+</html>
