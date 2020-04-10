@@ -10,6 +10,6 @@ Prefeitura Municipal, Câmara Municipal, Autarquias, Fundações e outros.
 
 # Instalação
 
-Acesso o diretorio docs para acesso aos manuais de instalação de acordo com as plataformas suportadas.
+Consulte o diretorio docs para acesso aos manuais de instalação de acordo com as plataformas suportadas.
 
 # Melhorias
