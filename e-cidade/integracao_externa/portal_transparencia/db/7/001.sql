@@ -1,0 +1,1 @@
+alter TABLE transparencia.acordo_aditamento_itens alter column quantidade type numeric;

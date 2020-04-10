@@ -1,0 +1,2 @@
+update db_syscampo set descricao = 'Filiação 1', rotulo = 'Filiação 1', rotulorel = 'Filiação 1' where codcam = 1008900;
+update db_syscampo set descricao = 'Filiação 2', rotulo = 'Filiação 2', rotulorel = 'Filiação 2' where codcam = 1008899;

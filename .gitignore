@@ -1,0 +1,9 @@
+tmp/*
+/nbproject/private/
+cache/*
+libs/db_conn.php
+extension/log/*
+config/plugins.json
+config/require_extensions.xml
+libs/config.mail.php
+.idea/*

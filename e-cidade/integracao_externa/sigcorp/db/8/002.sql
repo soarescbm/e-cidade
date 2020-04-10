@@ -1,0 +1,1 @@
+ALTER TABLE integra_cad_socio ALTER COLUMN complemento TYPE character varying(100);

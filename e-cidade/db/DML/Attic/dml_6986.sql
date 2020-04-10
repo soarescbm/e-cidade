@@ -1,0 +1,21 @@
+insert into db_syscampo values(22005,'s152_perimetrocefalico','int4','Perímetro Cefálico','0', 'Perímetro Cefálico',10,'t','f','f',1,'text','Perímetro Cefálico');
+insert into db_syscampo values(22006,'s152_frequenciarespiratoria','int4','Frequência Respiratória','0', 'Frequência Respiratória',10,'t','f','f',1,'text','Frequência Respiratória');
+insert into db_syscampo values(22007,'s152_frequenciacardiaca','int4','Frequência Cardíaca','0', 'Frequência Cardíaca',10,'t','f','f',1,'text','Frequência Cardíaca');
+insert into db_syscampo values(22009,'s152_dum','date','DUM','null', 'DUM',10,'t','f','f',1,'text','DUM');
+insert into db_syscampo values(22010,'s152_saturacao','int4','Saturação de O2','0', 'Saturação de O2',10,'t','f','f',1,'text','Saturação de O2');
+insert into db_sysarqcamp values(3043,22005,17,0);
+insert into db_sysarqcamp values(3043,22006,18,0);
+insert into db_sysarqcamp values(3043,22007,19,0);
+insert into db_sysarqcamp values(3043,22009,21,0);
+insert into db_sysarqcamp values(3043,22010,22,0);
+update db_syscampo set nomecam = 's152_i_alimentacaoexameglicemia', conteudo = 'int4', descricao = 'Alimentação do paciente ao realizar o exame de glicemia. 0 - Não informado; 1 - Em jejum; 2 - Pós-prandial; 3 - Pré-prandial;', valorinicial = '0', rotulo = 'Momento da Coleta', nulo = 't', tamanho = 1, maiusculo = 'f', autocompl = 'f', aceitatipo = 1, tipoobj = 'text', rotulorel = 'Momento da Coleta' where codcam = 17222;
+insert into db_syscampodef values(17222,'0','NÃO ESPECIFICADO');
+insert into db_syscampodef values(17222,'1','JEJUM');
+insert into db_syscampodef values(17222,'2','PÓS-PRANDIAL');
+insert into db_syscampodef values(17222,'3','PRÉ-PRANDIAL');
+
+alter table sau_triagemavulsa add column s152_perimetrocefalico int4 null;
+alter table sau_triagemavulsa add column s152_frequenciarespiratoria int4 null;
+alter table sau_triagemavulsa add column s152_frequenciacardiaca int4 null;
+alter table sau_triagemavulsa add column s152_dum date null;
+alter table sau_triagemavulsa add column s152_saturacao int4 null;

@@ -1,0 +1,1 @@
+alter table orcparamseq  add o69_origem integer;
