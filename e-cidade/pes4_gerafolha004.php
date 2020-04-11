@@ -9931,64 +9931,59 @@ function calc_tabprev ($base_inss=null,$codigo=null, $tpcont=null){
     DBRegistry::add($chaveTabela, $inssirf);
   }
   $iTotalLinhas = count($inssirf);
+
+  for( $Iinssirf = 0; $Iinssirf < $iTotalLinhas; $Iinssirf++ ) {
+    $oDadosPrevidencia = (object)$inssirf[$Iinssirf];
+  }
+  //teto do inss igual a último valor informado da faixa
+  if( $base_inss > $oDadosPrevidencia->r33_fim) {
+    $base_inss =  $oDadosPrevidencia->r33_fim;
+  }
+
+  $calculo_prev_escalonado = 0;
+  $desconto = 0;
+
   for( $Iinssirf = 0; $Iinssirf < $iTotalLinhas; $Iinssirf++ ) {
 
     $oDadosPrevidencia = (object)$inssirf[$Iinssirf];
+
+    LogCalculoFolha::write("Tabela de Previdencia.....: {$oDadosPrevidencia->r33_codtab}");
+    LogCalculoFolha::write("Inicio da Faixa...........: {$oDadosPrevidencia->r33_inic}");
+    LogCalculoFolha::write("Final da Faixa............: {$oDadosPrevidencia->r33_fim}");
+    LogCalculoFolha::write("Percentual da Faixa.......: {$oDadosPrevidencia->r33_perc}");
+
     if ( $base_inss >= $oDadosPrevidencia->r33_inic && $base_inss <= $oDadosPrevidencia->r33_fim ) {
 
-      LogCalculoFolha::write("Tabela de Previdencia.....: {$oDadosPrevidencia->r33_codtab}");
-      LogCalculoFolha::write("Inicio da Faixa...........: {$oDadosPrevidencia->r33_inic}");
-      LogCalculoFolha::write("Final da Faixa............: {$oDadosPrevidencia->r33_fim}");
-      LogCalculoFolha::write("Percentual da Faixa.......: {$oDadosPrevidencia->r33_perc}");
-      $r14_quant = $oDadosPrevidencia->r33_perc;
-      $r20_quant = $oDadosPrevidencia->r33_perc;
-      $r22_quant = $oDadosPrevidencia->r33_perc;
       $perc_inss = $oDadosPrevidencia->r33_perc;
+      $calculo_prev_escalonado += round((($base_inss - $desconto)/100)*$perc_inss,2);
+     
+    } elseif ($base_inss  > $oDadosPrevidencia->r33_fim){
 
-      if ($tpcont == "13"){
-        $perc_inss = 11;
-      }
-
-      $calculo = round(($base_inss/100)*$perc_inss,2);
-      LogCalculoFolha::write("Valor Calculado : $calculo");
-      return $calculo;
+      $perc_inss = $oDadosPrevidencia->r33_perc;
+      $calculo_prev_escalonado += round((($oDadosPrevidencia->r33_fim - $desconto)/100)*$perc_inss,2);
+      $desconto = $oDadosPrevidencia->r33_fim;
     }
   }//Fim do For
 
-  $Iinssirf -= 1;
-  $oDadosPrevidencia = (object)$inssirf[$Iinssirf];
+  $calculo = $calculo_prev_escalonado;
+  if($calculo > 0){
 
-  LogCalculoFolha::write("Tabela de Previdencia.....: {$oDadosPrevidencia->r33_codtab}");
-  LogCalculoFolha::write("Inicio da Faixa...........: {$oDadosPrevidencia->r33_inic}");
-  LogCalculoFolha::write("Final da Faixa............: {$oDadosPrevidencia->r33_fim}");
-  LogCalculoFolha::write("Percentual da Faixa.......: {$oDadosPrevidencia->r33_perc}");
-
-  if( $base_inss > $oDadosPrevidencia->r33_fim && $oDadosPrevidencia->r33_codtab == $codigo){
-
-    $r14_quant = $oDadosPrevidencia->r33_perc;
-    $r20_quant = $oDadosPrevidencia->r33_perc;
-    $r22_quant = $oDadosPrevidencia->r33_perc;
-    $perc_inss = $oDadosPrevidencia->r33_perc;
-
-    if( $tpcont == "13"){
-      $perc_inss = 11;
-    }
-
-    $calculo = ( $oDadosPrevidencia->r33_fim /100 ) * $perc_inss;
-    $calculo = round( $calculo, 2);
-
-
+    $perc_inss =   round(($calculo / $base_inss) * 100, 2);
+    $r14_quant =  $perc_inss;
+    $r20_quant =  $perc_inss;
+    $r22_quant =  $perc_inss;
+   
   } else {
     $r14_quant = 0;
     $r20_quant = 0;
     $r22_quant = 0;
+    $perc_inss = 0;
     $calculo   = 0;
   }
 
   LogCalculoFolha::write("Valor Calculado : $calculo");
   return $calculo;
 }
-
 
 function teto_tabprev ($base_inss=null,$codigo=null, $tpcont=null){
 
