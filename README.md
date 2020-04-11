@@ -38,3 +38,4 @@ Para acessar a versão de demonstração do e-Cidade apresentada nesse repoósit
 
   - [Correção de bug no lançamento de ponto fixo e ponto de salário - Módulo Pessoal](https://github.com/soarescbm/e-cidade/issues/1) - [Commit](https://github.com/soarescbm/e-cidade/commit/8d0ee89844fabac04ba4ce682f546732e2ca4c56)
   - [Ajuste no cálculo da contribuição previdenciária oficial conforme as novas regras da reforma da previdência - Módulo Pessoal](https://github.com/soarescbm/e-cidade/issues/3) - [Commit](https://github.com/soarescbm/e-cidade/pull/4/commits/acb28c37fb5a8bc656b11fc333a2a5f67a9d2e15)
+
